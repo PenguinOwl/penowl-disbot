@@ -37,6 +37,7 @@ end
 
 $bot.message() do |event|
   msga = event.message.content.split(" ")
+  msga.map { |e| e.downcase }
   swra = ENV['BADWORDS'].split(', ')
   unless (msga & swra).empty?
     $bot.sendmessage(event.channel.id,open(ENV['THEMAN']))
