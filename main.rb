@@ -19,8 +19,9 @@ def command(command,event,args)
 end
 
 fo = File.new('daboi.png', 'w+')
-fo.write open(ENV["THEMAN"]).read 
+fo.write open(ENV['THEMAN']).read
 
+puts open(ENV['THENMAN']).size
 
 $bot.message(start_with: prefix) do |event|
   puts "caught command"
