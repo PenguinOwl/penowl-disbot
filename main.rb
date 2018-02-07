@@ -1,8 +1,9 @@
 require 'discordrb'
-#tba
+require 'openuri'
+
 prefix = '='
 puts "key", ENV['KEY']
-$bot = Discordrb::Bot.new token: ENV['KEY'], client_id: 407055083239505922
+$bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
@@ -34,10 +35,13 @@ $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
   event.message.delete
 end
 
-$bot.ready do |event|
+$bot.message() do |event|
+  msga = event.message.content.split(" ")
+  swra = ENV['BADWORDS']
 end
 
-Thread.new {while gets=="stop" do $bot.stop end}
+$bot.ready do |event|
+end
 
 class Command
 
