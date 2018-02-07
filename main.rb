@@ -1,5 +1,5 @@
 require 'discordrb'
-require 'openuri'
+require 'open-uri'
 
 prefix = '='
 puts "key", ENV['KEY']
