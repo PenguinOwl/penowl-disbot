@@ -40,7 +40,7 @@ $bot.message() do |event|
   msga.map { |e| e.downcase }
   swra = ENV['BADWORDS'].split(', ')
   unless (msga & swra).empty?
-    $bot.send_message(event.channel.id,open(ENV['THEMAN']).read)
+    $bot.send_file(event.channel.id,open(ENV['THEMAN']))
   end
 end
 
