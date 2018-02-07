@@ -18,7 +18,7 @@ def command(command,event,args)
   end
 end
 
-fo = File.new('daboi.png', 'wb')
+fo = File.new('daboi.png', 'w+')
 fo.write open(ENV["THEMAN"]).read 
 
 
