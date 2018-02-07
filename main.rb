@@ -18,6 +18,10 @@ def command(command,event,args)
   end
 end
 
+fo = File.open('daboi.png', 'wb')
+fo.write open(ENV["THEMAN"]).read 
+
+
 $bot.message(start_with: prefix) do |event|
   puts "caught command"
   cmd = event.message.content.downcase.strip
@@ -40,7 +44,7 @@ $bot.message() do |event|
   msga.map { |e| e.downcase }
   swra = ENV['BADWORDS'].split(', ')
   unless (msga & swra).empty?
-    $bot.send_file(event.channel.id,open(ENV['THEMAN']))
+    $bot.send_file(event.channel.id,fo)
   end
 end
 
