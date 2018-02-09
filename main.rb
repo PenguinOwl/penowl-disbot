@@ -1,5 +1,6 @@
 require 'discordrb'
 require 'open-uri'
+require 'pg'
 
 prefix = '='
 puts "key", ENV['KEY']
@@ -18,10 +19,12 @@ def command(command,event,args)
   end
 end
 
+=begin
 fo = File.new('daboi.png', 'w+')
 fo.write open(ENV['THEMAN']).read
 
 puts open(ENV['THENMAN']).size
+=end
 
 $bot.message(start_with: prefix) do |event|
   puts "caught command"
@@ -40,6 +43,7 @@ $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
   event.message.delete
 end
 
+=begin
 $bot.message() do |event|
   msga = event.message.content.split(" ")
   msga.map { |e| e.downcase }
@@ -48,6 +52,7 @@ $bot.message() do |event|
     $bot.send_file(event.channel.id,fo)
   end
 end
+=end
 
 $bot.ready do |event|
 end
