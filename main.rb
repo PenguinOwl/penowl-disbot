@@ -2,6 +2,7 @@ require 'discordrb'
 require 'open-uri'
 require 'pg'
 
+conn = PG.connect(ENV['DATABASE_URL'])
 prefix = '='
 puts "key", ENV['KEY']
 $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
