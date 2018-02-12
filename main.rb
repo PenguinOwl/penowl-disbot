@@ -106,6 +106,7 @@ class Command
     event.message.mentions.each do |mem|
       event.respond(mem.distinct)
       mem = mem.on(event.channel.server)
+      event.respond mem.nick
       st = getVals(mem)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
     end
