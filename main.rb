@@ -106,7 +106,7 @@ class Command
   def Command.taxes(event, *args)
     event.respond("ell")
     event.message.mentions.each do |mem|
-      event.respond(mem.nick)
+      mem = mem.on(event.channel.server)
       st = getVals(mem)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
     end
