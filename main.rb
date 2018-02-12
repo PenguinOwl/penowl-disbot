@@ -3,6 +3,7 @@ require 'open-uri'
 require 'pg'
 $stdout.sync = false
 
+$error = 0
 $conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem)
   a = true
@@ -104,6 +105,7 @@ class Command
 
   def Command.checktaxes(event, *args)
     event.message.mentions.each do |mem|
+      event.respond(mem.nick)
       st = getVals(mem)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
     end
