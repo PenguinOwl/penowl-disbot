@@ -103,7 +103,8 @@ class Command
     end
   end
 
-  def Command.checktaxes(event, *args)
+  def Command.taxes(event, *args)
+    event.respond("ell")
     event.message.mentions.each do |mem|
       event.respond(mem.nick)
       st = getVals(mem)
