@@ -5,6 +5,7 @@ require 'pg'
 $conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem)
   a = true
+  puts "hi"
   $conn.exec_params('select * from users where userid=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
