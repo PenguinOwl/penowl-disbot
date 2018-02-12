@@ -5,7 +5,7 @@ require 'pg'
 conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem)
   a = true
-  conn.exec_params('select * from users where user=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
+  conn.exec_params('select * from users where userid=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
       a = false
@@ -15,9 +15,9 @@ def getVals(mem)
     conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server])
   end
 end
-def make_Money(mem)
+def setStat(mem, tax, bal)
   getVals(mem)
-  conn.exec_params('update * from users where user=$1 and serverid=$1', [mem.distinct, mem.server]) do |result|
+  conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
     end
