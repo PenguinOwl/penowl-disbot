@@ -15,6 +15,7 @@ def getVals(mem, event)
     end
   end
   if a
+    event.respond "e"
     $conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server])
   end
 end
