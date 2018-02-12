@@ -101,13 +101,6 @@ class Command
   end
 
   def Command.checktaxes(event, *args)
-    puts API::Server.resolve_members(ENV['KEY'],event.channel.server.id).size
-    API::Server.resolve_members(ENV['KEY'],event.channel.server.id).each do |mem|
-      if args.include? mem.distinct
-        event.respond "updating " + mem.distinct
-        setnick(mem.on(event.channel.server),event.channel.server)
-      end 
-    end
     event.message.mentions.each do |mem|
       st = getVals(mem)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
