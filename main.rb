@@ -3,6 +3,26 @@ require 'open-uri'
 require 'pg'
 
 conn = PG.connect(ENV['DATABASE_URL'])
+def getVals(mem)
+  a = true
+  conn.exec_params('select * from users where user=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
+    result.each do |row|
+      return row.values_at('tax', 'bal')
+      a = false
+    end
+  end
+  if a
+    conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server])
+  end
+end
+def make_Money(mem)
+  getVals(mem)
+  conn.exec_params('update * from users where user=$1 and serverid=$1', [mem.distinct, mem.server]) do |result|
+    result.each do |row|
+      return row.values_at('tax', 'bal')
+    end
+  end
+end
 prefix = '='
 puts "key", ENV['KEY']
 $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
