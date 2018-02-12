@@ -32,14 +32,14 @@ puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
   begin
-#    begin
+    begin
       Command.send(command,event,*args)
     rescue ArgumentError
       event.respond("Argument Error!!!1!!")
     end
-#  rescue NoMethodError
-#    event.respond("That's Not A Command!™")
-#  end
+  rescue NoMethodError
+    event.respond("That's Not A Command!™")
+  end
 end
 
 =begin
