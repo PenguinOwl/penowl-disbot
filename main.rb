@@ -4,11 +4,12 @@ require 'pg'
 
 $error = 0
 $conn = PG.connect(ENV['DATABASE_URL'])
-def getVals(mem)
+def getVals(mem, event)
   a = true
-  puts "hi"
+  event.respond "wot"
   $conn.exec_params('select * from users where userid=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
+      event.respond "got row"
       return row.values_at('tax', 'bal')
       a = false
     end
@@ -107,7 +108,7 @@ class Command
       event.respond(mem.distinct)
       mem = mem.on(event.channel.server)
       event.respond mem.nick
-      st = getVals(mem)
+      st = getVals(mem, event)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
     end
   end
