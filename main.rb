@@ -36,7 +36,7 @@ def command(command,event,args)
       event.respond("Argument Error!!!1!!")
     end
 #  rescue NoMethodError
-    event.respond("That's Not A Command!™")
+#    event.respond("That's Not A Command!™")
 #  end
 end
 
