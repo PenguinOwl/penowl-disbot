@@ -1,7 +1,6 @@
 require 'discordrb'
 require 'open-uri'
 require 'pg'
-$stdout.sync = false
 
 $error = 0
 $conn = PG.connect(ENV['DATABASE_URL'])
@@ -104,8 +103,8 @@ class Command
   end
 
   def Command.taxes(event, *args)
-    event.respond("ell")
     event.message.mentions.each do |mem|
+      event.respond(mem.distinct)
       mem = mem.on(event.channel.server)
       st = getVals(mem)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
