@@ -1,6 +1,7 @@
 require 'discordrb'
 require 'open-uri'
 require 'pg'
+$stdout.sync = true
 
 $conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem)
