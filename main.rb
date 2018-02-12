@@ -6,7 +6,6 @@ $error = 0
 $conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem, event)
   a = true
-  event.respond "wot"
   $conn.exec_params('select * from users where userid=$1 and serverid=$2', [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       event.respond "got row"
