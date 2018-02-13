@@ -67,7 +67,7 @@ $bot.message(start_with: prefix) do |event|
 end
 
 $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
-  event.respond "pls no u garbage"
+  event.respond "***GET THAT CANCA OUTTA HERE!!!***"
   event.message.delete
 end
 
