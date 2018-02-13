@@ -141,7 +141,7 @@ class Command
       end
       event.message.mentions.each do |mem|
         mem = mem.on(event.channel.server)
-        conc = "```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
+        conc = "**" + mem.nick + "**'s Stats```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.respond conc
     end
