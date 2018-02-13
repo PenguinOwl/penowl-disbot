@@ -7,22 +7,18 @@ $conn = PG.connect(ENV['DATABASE_URL'])
 def getVals(mem, event)
   a = true
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
-    event.respond "asdf"
     result.each do |row|
-      event.respond "got row"
       return row.values_at('tax', 'bal')
       a = false
     end
   end
-  event.respond( a ? "yes" : "no" )
   if a
-    event.respond "e"
     $conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server])
   end
 end
 def setStat(mem, tax, bal)
   getVals(mem)
-  $conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server]) do |result|
+  $conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
     end
@@ -107,9 +103,7 @@ class Command
 
   def Command.taxes(event, *args)
     event.message.mentions.each do |mem|
-      event.respond(mem.distinct)
       mem = mem.on(event.channel.server)
-      event.respond mem.nick
       st = getVals(mem, event)
       event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
     end
