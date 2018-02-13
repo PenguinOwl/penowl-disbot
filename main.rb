@@ -3,7 +3,11 @@ require 'open-uri'
 require 'pg'
 
 $error = 0
-$conn = PG::Connection.open(ENV['DATABASE_URL'])
+def link
+  $conn = PG::Connection.open(ENV['DATABASE_URL'])
+  yeild
+  $conn.close
+end
 def getVals(mem)
   a = true
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
@@ -90,8 +94,10 @@ end
 
 $bot.message do |event|
   unless event.message.content[0] == "=" 
-    st = getVals(event.author)
-    setStat(event.author,st[0].to_i+1,nil)
+    link do
+      st = getVals(event.author)
+      setStat(event.author,st[0].to_i+1,nil)
+    end
   end
 end
 
@@ -122,15 +128,17 @@ class Command
   end
 
   def Command.taxes(event, *args)
-    if event.message.mentions.size == 0
-      mem = event.author
-      st = getVals(mem)
-      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
-    end
-    event.message.mentions.each do |mem|
-      mem = mem.on(event.channel.server)
-      st = getVals(mem)
-      event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+    link do
+      if event.message.mentions.size == 0
+        mem = event.author
+        st = getVals(mem)
+        event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+      end
+      event.message.mentions.each do |mem|
+        mem = mem.on(event.channel.server)
+        st = getVals(mem)
+        event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+      end
     end
   end
   
