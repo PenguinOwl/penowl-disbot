@@ -102,6 +102,10 @@ class Command
   def Command.rubber(event)
     event.respond("woot")
   end
+  
+  def Command.version(event)
+    event.respond(ENV['HEROKU_RELEASE_VERSION'])
+  end
 
   def Command.ispaulgreat(event)
     event.respond("yea " + event.author.mention)
