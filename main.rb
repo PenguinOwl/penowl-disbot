@@ -142,15 +142,20 @@ class Command
       event.message.mentions.each do |mem|
         mem = mem.on(event.channel.server)
         conc = "```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: $#{getVals(mem, :invest).to_s}```"
-         end
-    event.respond conc
+      end
+      event.respond conc
     end
   end
   
   def Command.daily(event)
     link do
       unless getVals(mem, :day) == Today.to_s
-        setStat(mem, :tax)
+        setStat(mem, :bal, getVals(mem, :daily) + getVals(mem, :bal))
+        setStat(mem, :day:, Today.to_s)
+        event.respond "Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank."
+      end
+    end
+  end
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
