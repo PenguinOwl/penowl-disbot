@@ -3,7 +3,7 @@ require 'open-uri'
 require 'pg'
 
 $error = 0
-$conn = PG.connect(ENV['DATABASE_URL'])
+$conn = PG::Connection.open(ENV['DATABASE_URL'])
 def getVals(mem)
   a = true
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
