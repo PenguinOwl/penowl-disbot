@@ -129,7 +129,7 @@ class Command
     end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
-      st = getVals(mem, event)
+      st = getVals(mem)
       event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
   end
