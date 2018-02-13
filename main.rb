@@ -164,14 +164,15 @@ class Command
   end
   
   def Command.help(event)
-    em = Discordrb::Webhooks::Embed.new(name: "Commands")
-    af(em, "help", "not hard to guess")
-    af(em, "taxes [users]", "displays tax information")
-    af(em, "info [users]", "displays everything you need to know")
-    af(em, "pay (user)", "give someone some of your money")
-    af(em, "and", "more coming soon")
-    em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
-    event.channel.send_embed(embed: em)
+    event.channel.send_embed do |em|
+      em.name = "Commands"
+      af(em, "help", "not hard to guess")
+      af(em, "taxes [users]", "displays tax information")
+      af(em, "info [users]", "displays everything you need to know")
+      af(em, "pay (user)", "give someone some of your money")
+      af(em, "and", "more coming soon")
+      em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
+    end
   end
   
   def Command.>(event, *args)
