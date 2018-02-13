@@ -4,7 +4,7 @@ require 'pg'
 
 $error = 0
 $conn = PG.connect(ENV['DATABASE_URL'])
-def getVals(mem, event)
+def getVals(mem)
   a = true
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
@@ -23,7 +23,13 @@ def getVals(mem, event)
   end
 end
 def setStat(mem, tax, bal)
-  getVals(mem)
+  st = getVals(mem)
+  if tax = nil
+    tax = st[0]
+  end
+  if bal = nil
+    bal = st[1]
+  end
   $conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
@@ -83,7 +89,8 @@ end
 =end
 
 $bot.message do |event|
-  
+  st = getVals(bot.author)
+  setVals(mem,st+1,nil)
 end
 
 class Command
@@ -111,13 +118,13 @@ class Command
   def Command.taxes(event, *args)
     if event.message.mentions.size == 0
       mem = event.author
-      st = getVals(mem, event)
+      st = getVals(mem)
       event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
       st = getVals(mem, event)
-      event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+      event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
   end
   
