@@ -92,6 +92,10 @@ $bot.message do |event|
   end
 end
 
+def af(em, cmd, ds)
+  em.add_field(name: prefix+cmd, value: ds)
+end
+
 class Command
 
   #-----------------------------
@@ -158,6 +162,16 @@ class Command
       end
     end
   end
+  
+  def Command.help(event)
+    em = Webhooks::Embed.new(name: "Commands")
+    af(em, "help", "not hard to guess")
+    af(em, "taxes [users]", "displays tax information")
+    af(em, "info [users]", "displays everything you need to know")
+    af(em, "pay (user)", "give someone some of your money")
+    af(em, "and", "more coming soon")
+    em.footer = Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
+    event.channel.send_embed(em)
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
