@@ -30,7 +30,7 @@ end
 def setStat(mem, type, val)
   type = type.to_s
   getVals(mem, :tax)
-  $conn.exec_params('update users set #{type}=$1 where userid=$2 and serverid=$3', [val, mem.distinct, mem.server.id])
+  $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
 end
 prefix = '='
 puts "key", ENV['KEY']
