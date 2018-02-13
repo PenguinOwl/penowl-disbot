@@ -76,7 +76,8 @@ $bot.message() do |event|
 end
 =end
 
-$bot.ready do |event|
+$bot.message do |event|
+  
 end
 
 class Command
@@ -105,7 +106,7 @@ class Command
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
       st = getVals(mem, event)
-      event.respond("You owe $#{st[0].to_f * 0.50} to the IRS. You have $#{st[1].to_f * 0.01}.")
+      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
   end
   
