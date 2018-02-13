@@ -8,37 +8,29 @@ def link
   yield
   $conn.close
 end
-def getVals(mem)
+def getVals(mem, type)
   a = true
+  type = type.to_s
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
     result.each do |row|
-      return row.values_at('tax', 'bal')
+      return row.values_at(type).first
       a = false
     end
   end
   if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)", [mem.distinct, mem.server.id])
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily) values ($1, $2, 0, 500, 0, 5, 100)", [mem.distinct, mem.server.id])
     $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
       result.each do |row|
-        return row.values_at('tax', 'bal')
+        return row.values_at(type).first
         a = false
       end
     end
   end
 end
-def setStat(mem, tax, bal)
-  st = getVals(mem)
-  if tax == nil
-    tax = st[0]
-  end
-  if bal == nil
-    bal = st[1]
-  end
-  $conn.exec_params('update users set tax=$1, bal=$2 where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
-    result.each do |row|
-      return row.values_at('tax', 'bal')
-    end
-  end
+def setStat(mem, type, val)
+  type = type.to_s
+  getVals(mem, :tax)
+  $conn.exec_params('update users set $2=$1 where userid=$3 and serverid=$4', [val, type, mem.distinct, mem.server.id])
 end
 prefix = '='
 puts "key", ENV['KEY']
@@ -95,8 +87,8 @@ end
 $bot.message do |event|
   unless event.message.content[0] == "=" 
     link do
-      st = getVals(event.author)
-      setStat(event.author,st[0].to_i+1,nil)
+      st = getVals(event.author, :tax)
+      setStat(event.author,st[0].to_i+getVals(event.author, :taxamt),nil)
     end
   end
 end
@@ -131,16 +123,34 @@ class Command
     link do
       if event.message.mentions.size == 0
         mem = event.author
-        st = getVals(mem)
-        event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+        event.respond("You owe $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
       end
       event.message.mentions.each do |mem|
         mem = mem.on(event.channel.server)
-        st = getVals(mem)
-        event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+        event.respond(mem.mention + " owes $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
       end
     end
   end
+  
+  def Command.info(event, *args)
+    link do
+      conc = ""
+      if event.message.mentions.size == 0
+        mem = event.author
+        conc = "```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: $#{getVals(mem, :invest).to_s}```")
+      end
+      event.message.mentions.each do |mem|
+        mem = mem.on(event.channel.server)
+        conc = "```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: $#{getVals(mem, :invest).to_s}```")
+      end
+    event.respond conc
+    end
+  end
+  
+  def Command.daily(event)
+    link do
+      unless getVals(mem, :day) == Today.to_s
+        setStat(mem, :tax)
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
