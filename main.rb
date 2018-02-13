@@ -149,9 +149,9 @@ class Command
   def Command.daily(event)
     mem = event.author
     link do
-      unless getVals(mem, :day) == Today.to_s
+      unless getVals(mem, :day) == Date.today.to_s
         setStat(mem, :bal, getVals(mem, :daily) + getVals(mem, :bal))
-        setStat(mem, :day, Today.to_s)
+        setStat(mem, :day, Date.today.to_s)
         event.respond "Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank."
       end
     end
