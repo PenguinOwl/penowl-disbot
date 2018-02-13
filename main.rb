@@ -32,7 +32,7 @@ def setStat(mem, type, val)
   getVals(mem, :tax)
   $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
 end
-prefix = '='
+$prefix= '='
 puts "key", ENV['KEY']
 $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
@@ -56,7 +56,7 @@ fo.write open(ENV['THEMAN']).read
 puts open(ENV['THENMAN']).size
 =end
 
-$bot.message(start_with: prefix) do |event|
+$bot.message(start_with: $prefix) do |event|
   puts "caught command"
   cmd = event.message.content.downcase.strip
   cmd[0] = ""
@@ -93,7 +93,7 @@ $bot.message do |event|
 end
 
 def af(em, cmd, ds)
-  em.add_field(name: prefix+cmd, value: ds)
+  em.add_field(name: $prefix+cmd, value: ds)
 end
 
 class Command
