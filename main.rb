@@ -148,6 +148,7 @@ class Command
   end
   
   def Command.daily(event)
+    mem = event.author
     link do
       unless getVals(mem, :day) == Today.to_s
         setStat(mem, :bal, getVals(mem, :daily) + getVals(mem, :bal))
