@@ -5,7 +5,7 @@ require 'pg'
 $error = 0
 def link
   $conn = PG::Connection.open(ENV['DATABASE_URL'])
-  yeild
+  yield
   $conn.close
 end
 def getVals(mem)
