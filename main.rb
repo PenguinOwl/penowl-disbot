@@ -14,6 +14,12 @@ def getVals(mem, event)
   end
   if a
     $conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server.id])
+    $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
+      result.each do |row|
+        return row.values_at('tax', 'bal')
+        a = false
+      end
+    end
   end
 end
 def setStat(mem, tax, bal)
