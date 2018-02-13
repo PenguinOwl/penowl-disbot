@@ -87,7 +87,7 @@ end
 $bot.message do |event|
   unless event.message.content[0] == "=" 
     link do
-      setStat(event.author, :tax, getVals(event.author, :tax)+getVals(event.author, :taxamt))
+      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
     end
   end
 end
@@ -150,7 +150,7 @@ class Command
     mem = event.author
     link do
       unless getVals(mem, :day) == Date.today.to_s
-        setStat(mem, :bal, getVals(mem, :daily) + getVals(mem, :bal))
+        setStat(mem, :bal, getVals(mem, :daily).to_i + getVals(mem, :bal).to_i)
         setStat(mem, :day, Date.today.to_s)
         event.respond "Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank."
       else
