@@ -38,15 +38,15 @@ $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
-#  begin
-#    begin
+  begin
+    begin
       Command.send(command,event,*args)
-#    rescue ArgumentError
-#      event.respond("Argument error!")
-#    end
-#  rescue NoMethodError
-#    event.respond("That's not a command!")
-#  end
+    rescue ArgumentError
+      event.respond("Argument error!")
+    end
+  rescue NoMethodError
+    event.respond("That's not a command!")
+  end
 end
 
 =begin
@@ -165,7 +165,7 @@ class Command
   
   def Command.help(event)
     event.channel.send_embed do |em|
-      em.name = "Commands"
+      em.title = "Commands"
       af(em, "help", "not hard to guess")
       af(em, "taxes [users]", "displays tax information")
       af(em, "info [users]", "displays everything you need to know")
