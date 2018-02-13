@@ -89,8 +89,10 @@ end
 =end
 
 $bot.message do |event|
-  st = getVals(event.author)
-  setStat(event.author,st[0].to_i+1,nil)
+  unless event.message.content[0] == "=" 
+    st = getVals(event.author)
+    setStat(event.author,st[0].to_i+1,nil)
+  end
 end
 
 class Command
