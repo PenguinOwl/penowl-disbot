@@ -125,7 +125,7 @@ class Command
     if event.message.mentions.size == 0
       mem = event.author
       st = getVals(mem)
-      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
