@@ -109,10 +109,15 @@ class Command
   end
 
   def Command.taxes(event, *args)
+    if event.message.mentions.size == 0
+      mem = event.author
+      st = getVals(mem, event)
+      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+    end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
       st = getVals(mem, event)
-      event.respond("You owe $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. You have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
+      event.respond(mem.mention + " owes $#{sprintf "%.2f", st[0].to_f * 0.50} to the IRS. They have $#{sprintf "%.2f", st[1].to_f * 0.01}.")
     end
   end
   
