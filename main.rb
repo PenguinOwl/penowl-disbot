@@ -172,6 +172,7 @@ class Command
     af(em, "and", "more coming soon")
     em.footer = Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     event.channel.send_embed(em)
+  end
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
