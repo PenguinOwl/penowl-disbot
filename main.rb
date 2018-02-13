@@ -171,7 +171,7 @@ class Command
     af(em, "pay (user)", "give someone some of your money")
     af(em, "and", "more coming soon")
     em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
-    event.channel.send_embed(em)
+    event.channel.send_embed(embed: em)
   end
   
   def Command.>(event, *args)
