@@ -87,8 +87,7 @@ end
 $bot.message do |event|
   unless event.message.content[0] == "=" 
     link do
-      st = getVals(event.author, :tax)
-      setStat(event.author,st[0].to_i+getVals(event.author, :taxamt),nil)
+      setStat(event.author, :tax, getVals(event.author, :tax)+getVals(event.author, :taxamt))
     end
   end
 end
