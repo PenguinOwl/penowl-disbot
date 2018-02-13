@@ -13,7 +13,7 @@ def getVals(mem, event)
     end
   end
   if a
-    $conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server])
+    $conn.exec_params('insert into users (userid, serverid, tax, bal, credit) values ($1, $2, 0, 0, 0)', [mem.distinct, mem.server.id])
   end
 end
 def setStat(mem, tax, bal)
