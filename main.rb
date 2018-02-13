@@ -30,7 +30,7 @@ def setStat(mem, tax, bal)
   if bal == nil
     bal = st[1]
   end
-  $conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
+  $conn.exec_params('update users set tax=$1, bal=$2 where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at('tax', 'bal')
     end
