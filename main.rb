@@ -42,10 +42,10 @@ def command(command,event,args)
     begin
       Command.send(command,event,*args)
     rescue ArgumentError
-      event.respond("Argument Error!!!1!!")
+      event.respond("Argument error!")
     end
   rescue NoMethodError
-    event.respond("That's Not A Command!™")
+    event.respond("That's not a command!")
   end
 end
 
@@ -153,6 +153,8 @@ class Command
         setStat(mem, :bal, getVals(mem, :daily) + getVals(mem, :bal))
         setStat(mem, :day, Date.today.to_s)
         event.respond "Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank."
+      else
+        event.respond "You already collected your reward!"
       end
     end
   end
