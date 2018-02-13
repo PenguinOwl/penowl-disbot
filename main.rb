@@ -24,10 +24,10 @@ def getVals(mem)
 end
 def setStat(mem, tax, bal)
   st = getVals(mem)
-  if tax = nil
+  if tax == nil
     tax = st[0]
   end
-  if bal = nil
+  if bal == nil
     bal = st[1]
   end
   $conn.exec_params('update users set (tax=$1, bal=$2) where userid=$3 and serverid=$4', [tax, bal, mem.distinct, mem.server.id]) do |result|
