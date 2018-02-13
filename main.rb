@@ -89,7 +89,7 @@ end
 =end
 
 $bot.message do |event|
-  st = getVals(bot.author)
+  st = getVals(event.author)
   setVals(mem,st[0].to_i+1,nil)
 end
 
