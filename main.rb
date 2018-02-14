@@ -72,6 +72,7 @@ end
 
 $bot.message do |event|
   unless event.message.content[0] == "=" 
+    mem = event.author
     link do
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
@@ -147,12 +148,12 @@ class Command
       end
       event.message.mentions.each do |mem|
         s = ""
+        mem = mem.on(event.channel.server)
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
            s = "$" + sprintf("%.2f", getVals(mem, :tax).to_f * 0.01)
         else
            s = "Paid"
         end
-        mem = mem.on(event.channel.server)
         conc = "**" + mem.nick + "**'s Stats```Tax: #{s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.respond conc
