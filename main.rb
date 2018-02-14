@@ -175,6 +175,25 @@ class Command
     end
   end
   
+  def Command.pay(event, ment, amt)
+    link do
+      mem = event.author
+      amt = amt.to_s.match(/[\d\.]+/).to_f.*(100).to_i
+      bal = getVals(mem, :bal)
+      if amt <= getVals(mem, :bal)
+        if event.message.mentions.size == 1
+          mem2 = event.message.mentions.first.on(event.channel.server)
+          setStat(mem, :bal, bal-amt)
+          setStat(mem2, :bal, getVals(mem2, :bal) + amt)
+        else
+          event.respond "Mention someone to pay them!"
+        end
+      else
+        event.respond "Not enough money!"
+      end
+    end
+  end
+  
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
       puts args.join " "
