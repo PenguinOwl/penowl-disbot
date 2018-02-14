@@ -229,7 +229,7 @@ class Command
         if diff > 0
           event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
         else
-          event.respond "**Oh no!** Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * 0.01} cut."
+          event.respond "**Oh no!** Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * -0.01} cut."
         end
         setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + diff)
         setStat(mem, :daily, getVals(mem, :daily).to_i + diff)
