@@ -1,8 +1,12 @@
 require 'discordrb'
 require 'open-uri'
 require 'pg'
+require 'date'
 
 $error = 0
+def taxdays(mydate)
+    mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
+end
 def link
   $conn = PG::Connection.open(ENV['DATABASE_URL'])
   yield
@@ -194,6 +198,29 @@ class Command
       end
     end
   end
+  
+  def Command.paytaxes(event)
+    link do
+      mem = event.author
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        if getVals(mem, :tax).to_i <= getVals(mem, :bal).to_i
+          if taxdays(Date.today)
+            setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :tax).to_i)
+            setStat(mem, :tax, 0)
+            setStat(mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
+            event.respond "Taxes paid for the month of " + Date.today.strftime("%B") + "."
+          else
+            event.respond "You may only pay your taxes on the last 5 days of the month!"
+          end
+        else
+          event.respond "You do not have enough money to pay your taxes!"
+        end
+      else
+        event.respond "You have already paid your taxes this month!"
+      end
+    end
+  end
+            
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
