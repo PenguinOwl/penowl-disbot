@@ -156,22 +156,22 @@ class Command
       if event.message.mentions.size == 0
         s = ""
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-           s = sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+           s = "$"+sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
         else
            s = "Paid"
         end
         mem = event.author
-        conc = "**" + mem.nick + "**'s Stats```Tax: #{"$"+s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
+        conc = "**" + mem.nick + "**'s Stats```Tax: #{s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.message.mentions.each do |mem|
         s = ""
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-           s = sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+           s = "$"+sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
         else
            s = "Paid"
         end
         mem = mem.on(event.channel.server)
-        conc = "**" + mem.nick + "**'s Stats```Tax: #{"$"+s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
+        conc = "**" + mem.nick + "**'s Stats```Tax: #{s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.respond conc
     end
