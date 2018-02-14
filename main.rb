@@ -193,6 +193,7 @@ class Command
       af(em, "info [users]", "displays everything you need to know")
       af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "daily", "collect your daily wages")
+      af(em, "invest", "invest money (shown in #{$prefix}info) to increase your daily rewards")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
@@ -227,6 +228,7 @@ class Command
         setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + rand(50) - 25)
         setStat(mem, :daily, getVals(mem, :daily).to_i + rand(75) - 25)
         setStat(mem, :invest, getVals(mem, :invest).to_i + 1)
+        setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + rand(1))
       else
         event.respond "Not enough money!"
       end
