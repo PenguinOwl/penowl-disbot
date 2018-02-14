@@ -178,7 +178,7 @@ class Command
       unless getVals(mem, :day) == Date.today.to_s
         setStat(mem, :bal, getVals(mem, :daily).to_i + getVals(mem, :bal).to_i)
         setStat(mem, :day, Date.today.to_s)
-        event.respond "Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank."
+        event.respond "**Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank.**"
       else
         event.respond "You already collected your reward!"
       end
@@ -209,7 +209,7 @@ class Command
           mem2 = event.message.mentions[0].on(event.channel.server)
           setStat(mem, :bal, bal-amt)
           setStat(mem2, :bal, getVals(mem2, :bal).to_i + amt)
-          event.respond "Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}."
+          event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
         else
           event.respond "Mention someone to pay them!"
         end
@@ -223,20 +223,20 @@ class Command
     link do
       mem = event.author.on(event.channel.server)
       if getVals(mem, :invcost).to_i <= getVals(mem, :bal).to_i
-        event.respond "Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market."
+        event.respond "*Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market.*"
         setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :invcost).to_i)
         diff = rand(50) - 10
         if diff > 0
-          event.respond "Success! Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
+          event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
         else
-          event.respond "Oh no! Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * 0.01} cut."
+          event.respond "**Oh no!** Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * 0.01} cut."
         end
         setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + diff)
         setStat(mem, :daily, getVals(mem, :daily).to_i + rand(75) - 25)
         setStat(mem, :invest, getVals(mem, :invest).to_i + 1)
         irs = rand(1)
         if irs == 1 and diff > 0 
-          event.respond "The IRS saw your investment and decided to raise your taxes."
+          event.respond "*The IRS saw your investment and decided to raise your taxes.*"
         else
           irs = 0
         end
