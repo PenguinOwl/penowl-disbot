@@ -244,7 +244,7 @@ class Command
   def Command.help(event)
     event.channel.send_embed do |em|
       em.title = "Commands"
-      em.color = 013600
+      em.color = 313600
       af(em, "help", "not hard to guess")
       af(em, "taxes [users]", "displays tax information")
       af(em, "balance [users]", "displays balance - aliases: bal, money")
