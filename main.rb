@@ -113,16 +113,16 @@ class Command
 
   def Command.taxes(event, *args)
     link do
+      mem = event.author
       if event.message.mentions.size == 0
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-          mem = event.author
           event.respond("You owe $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
         else
           event.respond("You have paid your taxes.")
         end
       end
       event.message.mentions.each do |mem|
-        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        if getVals(mem.on(event.channel.server), :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
           mem = mem.on(event.channel.server)
           event.respond(mem.mention + " owes $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
         else
