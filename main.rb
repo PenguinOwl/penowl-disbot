@@ -169,7 +169,7 @@ class Command
       af(em, "help", "not hard to guess")
       af(em, "taxes [users]", "displays tax information")
       af(em, "info [users]", "displays everything you need to know")
-      af(em, "pay (user)", "give someone some of your money")
+      af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "and", "more coming soon")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
@@ -185,6 +185,7 @@ class Command
           mem2 = event.message.mentions.first.on(event.channel.server)
           setStat(mem, :bal, bal-amt)
           setStat(mem2, :bal, getVals(mem2, :bal) + amt)
+          event.respond "Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}."
         else
           event.respond "Mention someone to pay them!"
         end
