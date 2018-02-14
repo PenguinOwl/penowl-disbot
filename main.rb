@@ -212,7 +212,7 @@ class Command
       unless getVals(mem, :lbday) == Date.today.to_s
         if ["taxes", "investments", "rates"].include? type
           setStat(mem, :lbday, Date.today.to_s)
-          setStat(mem, :lbcount, getVals(mem, :lbcount) + 1)
+          setStat(mem, :lbcount, getVals(mem, :lbcount).to_i + 1)
           chance = 4
           if Date.today.sunday? or Date.today.saturday?
             chance = 9
