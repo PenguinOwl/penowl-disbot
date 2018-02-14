@@ -217,6 +217,21 @@ class Command
       end
     end
   end
+    
+  def Command.invest(event)
+    link do
+      mem = event.author.on(event.channel.server)
+      if getVals(mem, :invcost).to_i <= getVals(mem, :bal).to_i
+        event.respond "Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market."
+        setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :invcost).to_i)
+        setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + rand(50) - 25)
+        setStat(mem, :daily, getVals(mem, :daily).to_i + rand(75) - 25)
+        setStat(mem, :invest, getVals(mem, :invest).to_i + 1)
+      else
+        event.respond "Not enough money!"
+      end
+    end
+  end
   
   def Command.paytaxes(event)
     link do
