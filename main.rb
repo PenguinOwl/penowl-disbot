@@ -42,23 +42,16 @@ $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
-#  begin
-#    begin
+  begin
+    begin
        Command.send(command,event,*args)
-#    rescue ArgumentError
-#      event.respond("Argument error!")
-#    end
-#  rescue NoMethodError
-#    event.respond("That's not a command!")
-#  end
+    rescue ArgumentError
+      event.respond("Argument error!")
+    end
+  rescue NoMethodError
+    event.respond("That's not a command!")
+  end
 end
-
-=begin
-fo = File.new('daboi.png', 'w+')
-fo.write open(ENV['THEMAN']).read
-
-puts open(ENV['THENMAN']).size
-=end
 
 $bot.message(start_with: $prefix) do |event|
   puts "caught command"
@@ -76,17 +69,6 @@ $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
   event.respond "***GET THAT CANCA OUTTA HERE!!!***"
   event.message.delete
 end
-
-=begin
-$bot.message() do |event|
-  msga = event.message.content.split(" ")
-  msga.map { |e| e.downcase }
-  swra = ENV['BADWORDS'].split(', ')
-  unless (msga & swra).empty?
-    $bot.send_file(event.channel.id,fo)
-  end
-end
-=end
 
 $bot.message do |event|
   unless event.message.content[0] == "=" 
@@ -198,6 +180,7 @@ class Command
       af(em, "info [users]", "displays everything you need to know")
       af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "daily", "collect your daily wages")
+      af(em, "paytaxes", "p a y   y o u r   t a x e s")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
   end
