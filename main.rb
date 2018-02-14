@@ -22,7 +22,7 @@ def getVals(mem, type)
     end
   end
   if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount) values ($1, $2, 0, 500, 0, 5, 100, 0, 500, 0)", [mem.distinct, mem.server.id])
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0)", [mem.distinct, mem.server.id])
     $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
@@ -286,7 +286,7 @@ class Command
       if getVals(mem, :invcost).to_i <= getVals(mem, :bal).to_i
         event.respond "*Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market.*"
         setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :invcost).to_i)
-        diff = rand(75) - 20
+        diff = rand(getVals(mem, :invcost).to_i/5) - getVals(mem, :invcost).to_i/15 
         if diff > 0
           event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
         else
