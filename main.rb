@@ -44,7 +44,7 @@ puts ARGV[0]
 def command(command,event,args)
 #  begin
 #    begin
-      Command.send(command,event,*args)
+       Command.send(command,event,*args)
 #    rescue ArgumentError
 #      event.respond("Argument error!")
 #    end
@@ -91,7 +91,9 @@ end
 $bot.message do |event|
   unless event.message.content[0] == "=" 
     link do
-      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      end
     end
   end
 end
@@ -129,12 +131,20 @@ class Command
   def Command.taxes(event, *args)
     link do
       if event.message.mentions.size == 0
-        mem = event.author
-        event.respond("You owe $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+          mem = event.author
+          event.respond("You owe $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        else
+          event.respond("You have paid your taxes.")
+        end
       end
       event.message.mentions.each do |mem|
-        mem = mem.on(event.channel.server)
-        event.respond(mem.mention + " owes $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+          mem = mem.on(event.channel.server)
+          event.respond(mem.mention + " owes $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        else
+          event.respond("You have paid your taxes.")
+        end
       end
     end
   end
@@ -143,10 +153,22 @@ class Command
     link do
       conc = ""
       if event.message.mentions.size == 0
+        s = ""
+        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+           s = sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+        else
+           s = "Paid"
+        end
         mem = event.author
-        conc = "**" + mem.nick + "**'s Stats```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
+        conc = "**" + mem.nick + "**'s Stats```Tax: $#{}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.message.mentions.each do |mem|
+        s = ""
+        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+           s = sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+        else
+           s = "Paid"
+        end
         mem = mem.on(event.channel.server)
         conc = "**" + mem.nick + "**'s Stats```Tax: $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
@@ -204,14 +226,14 @@ class Command
       mem = event.author
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         if getVals(mem, :tax).to_i <= getVals(mem, :bal).to_i
-#          if taxdays(Date.today)
+          if taxdays(Date.today)
             setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :tax).to_i)
             setStat(mem, :tax, 0)
             setStat(mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
             event.respond "Taxes paid for the month of " + Date.today.strftime("%B") + "."
- #         else
-   #         event.respond "You may only pay your taxes on the last 5 days of the month!"
-  #        end
+          else
+            event.respond "You may only pay your taxes on the last 5 days of the month!"
+          end
         else
           event.respond "You do not have enough money to pay your taxes!"
         end
