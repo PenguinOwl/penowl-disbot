@@ -138,7 +138,7 @@ class Command
       if event.message.mentions.size == 0
         s = ""
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-           s = "$"+sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+           s = "$" + sprintf(%.2f", getVals(mem, :tax).to_f * 0.01)
         else
            s = "Paid"
         end
@@ -148,7 +148,7 @@ class Command
       event.message.mentions.each do |mem|
         s = ""
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-           s = "$"+sprintf "%.2f", getVals(mem, :tax).to_f * 0.01
+           s = "$" + sprintf("%.2f", getVals(mem, :tax).to_f * 0.01)
         else
            s = "Paid"
         end
