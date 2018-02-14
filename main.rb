@@ -293,7 +293,7 @@ class Command
         setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + diff)
         setStat(mem, :daily, getVals(mem, :daily).to_i + diff)
         setStat(mem, :invest, getVals(mem, :invest).to_i + 1)
-        irs = rand(1)
+        irs = rand(2)
         if irs == 1 and diff > 0 
           event.respond "*The IRS saw your investment and decided to raise your taxes.*"
         else
