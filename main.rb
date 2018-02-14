@@ -151,6 +151,7 @@ class Command
   
   def Command.info(event, *args)
     link do
+      mem = event.author
       conc = ""
       if event.message.mentions.size == 0
         s = ""
