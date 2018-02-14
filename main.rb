@@ -154,7 +154,13 @@ class Command
         else
            s = "Paid"
         end
-        conc = "**" + mem.nick + "**'s Stats```Tax: #{s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
+        n = ""
+        if mem.nick
+          n = mem.nick
+        else
+          n = mem.username
+        end
+        conc = "**" +  + "**'s Stats```Tax: #{s}\nBalence: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}```"
       end
       event.respond conc
     end
