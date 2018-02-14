@@ -179,12 +179,12 @@ class Command
     link do
       mem = event.author
       amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
-      bal = getVals(mem, :bal)
+      bal = getVals(mem, :bal).to_i
       if amt <= getVals(mem, :bal).to_i
         if event.message.mentions.size == 1
           mem2 = event.message.mentions[0].on(event.channel.server)
           setStat(mem, :bal, bal-amt)
-          setStat(mem2, :bal, getVals(mem2, :bal) + amt)
+          setStat(mem2, :bal, getVals(mem2, :bal).to_i + amt)
           event.respond "Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}."
         else
           event.respond "Mention someone to pay them!"
