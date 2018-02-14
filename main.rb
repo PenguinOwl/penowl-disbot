@@ -178,7 +178,7 @@ class Command
   def Command.pay(event, ment, amt)
     link do
       mem = event.author
-      amt = amt.to_s.match(/[\d\.]+/).to_f.*(100).to_i
+      amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
       bal = getVals(mem, :bal)
       if amt <= getVals(mem, :bal)
         if event.message.mentions.size == 1
