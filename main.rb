@@ -206,6 +206,40 @@ class Command
     end
   end
   
+  def Command.lobby(event, type)
+    mem = event.author
+    link do
+      unless getVals(mem, :lbday) == Date.today.to_s
+        if ["taxes", "investments", "rates"].include? type
+          setStat(mem, :lbday, Date.today.to_s)
+          chance = 4
+          if Date.today.sunday? or Date.today.saturday?
+            chance = 9
+          end
+          if rand(chance) == 1
+            event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE."
+            setStat(mem, :tax, getVals(mem, :lbcount).to_i*200 + getVals(mem, :tax).to_i)
+          else
+            if type == "rates"
+              event.respond "**You successfully lobbied the tax code!**"
+              setStat(mem, :taxamt, getVals(mem, :taxamt).to_i - 1)
+            elsif type == "investments"
+              event.respond "**You successfully lobbied the stock market!**"
+              setStat(mem, :invcost, getVals(mem, :invcost).to_i / 2)
+            elsif type == "taxes"
+              event.respond "**You successfully lobbied the your local tax collecter!**"
+              setStat(mem, :tax, getVals(mem, :tax).to_i / 2) 
+            end
+          end
+        else
+          event.respond "You can only lobby three agencies: investments, taxes, and rates."
+        end
+      else
+        event.respond "You have already lobbied today!"
+      end
+    end
+  end
+  
   def Command.help(event)
     event.channel.send_embed do |em|
       em.title = "Commands"
@@ -216,6 +250,7 @@ class Command
       af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "daily", "collect your daily wages")
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your daily rewards")
+      af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
@@ -291,6 +326,7 @@ class Command
     end
   end
             
+  
   
   def Command.>(event, *args)
     if event.author.distinct=="PenguinOwl#3931"
