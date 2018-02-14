@@ -286,7 +286,7 @@ class Command
       if getVals(mem, :invcost).to_i <= getVals(mem, :bal).to_i
         event.respond "*Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market.*"
         setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :invcost).to_i)
-        diff = rand(getVals(mem, :invcost).to_i/5) - getVals(mem, :invcost).to_i/15 
+        diff = (rand(getVals(mem, :invcost).to_i/5) - getVals(mem, :invcost).to_i/15) * 2
         if diff > 0
           event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
         else
