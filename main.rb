@@ -204,14 +204,14 @@ class Command
       mem = event.author
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         if getVals(mem, :tax).to_i <= getVals(mem, :bal).to_i
-          if taxdays(Date.today)
+#          if taxdays(Date.today)
             setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :tax).to_i)
             setStat(mem, :tax, 0)
             setStat(mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
             event.respond "Taxes paid for the month of " + Date.today.strftime("%B") + "."
-          else
-            event.respond "You may only pay your taxes on the last 5 days of the month!"
-          end
+ #         else
+   #         event.respond "You may only pay your taxes on the last 5 days of the month!"
+  #        end
         else
           event.respond "You do not have enough money to pay your taxes!"
         end
