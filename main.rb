@@ -139,6 +139,7 @@ class Command
         event.respond("**You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.**")
       end
       event.message.mentions.each do |mem|
+        mem = mem.on(event.channel.server)
         event.respond("**" + mem.mention + " has $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.**")
       end
     end
