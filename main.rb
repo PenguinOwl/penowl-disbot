@@ -42,15 +42,15 @@ $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
-  begin
-    begin
+#  begin
+#    begin
        Command.send(command,event,*args)
-    rescue ArgumentError
-      event.respond("Argument error!")
-    end
-  rescue NoMethodError
-    event.respond("That's not a command!")
-  end
+#    rescue ArgumentError
+#      event.respond("Argument error!")
+#    end
+#  rescue NoMethodError
+#    event.respond("That's not a command!")
+#  end
 end
 
 $bot.message(start_with: $prefix) do |event|
