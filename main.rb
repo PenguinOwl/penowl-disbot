@@ -218,7 +218,7 @@ class Command
             chance = 9
           end
           if rand(chance) == 1
-            event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE."
+            event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE.***"
             setStat(mem, :tax, getVals(mem, :lbcount).to_i*200 + getVals(mem, :tax).to_i)
           else
             if type == "rates"
