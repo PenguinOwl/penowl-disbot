@@ -180,7 +180,7 @@ class Command
       mem = event.author
       amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
       bal = getVals(mem, :bal)
-      if amt <= getVals(mem, :bal)
+      if amt <= getVals(mem, :bal).to_i
         if event.message.mentions.size == 1
           mem2 = event.message.mentions[0].on(event.channel.server)
           setStat(mem, :bal, bal-amt)
