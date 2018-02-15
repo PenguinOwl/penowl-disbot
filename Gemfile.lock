@@ -12,7 +12,7 @@ GEM
       pg-hstore (>= 1.1.5)
       rake
     kickscraper (0.2.4)
-      faraday (< 0.9, >= 0.7)
+      faraday (>= 0.7, < 0.9)
       faraday_middleware (~> 0.8)
       multi_json (>=1.0.3, ~> 1.0)
       hashie (~> 2)
