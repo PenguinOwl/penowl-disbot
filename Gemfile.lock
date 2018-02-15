@@ -69,6 +69,7 @@ DEPENDENCIES
   activerecord-postgres-hstore (~> 0.7.8)
   discordrb
   pg
+  kickscraper
 
 BUNDLED WITH
    1.16.1
