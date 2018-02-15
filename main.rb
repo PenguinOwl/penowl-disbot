@@ -230,7 +230,7 @@ class Command
               event.respond "**You successfully lobbied the stock market!**"
               setStat(mem, :invcost, getVals(mem, :invcost).to_i - (getVals(mem, :invcost).to_i / 3))
             elsif type == "taxes"
-              event.respond "**You successfully lobbied the your local tax collecter!**"
+              event.respond "**You successfully lobbied your local tax collecter!**"
               setStat(mem, :tax, getVals(mem, :tax).to_i / 2) 
             end
           end
