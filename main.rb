@@ -161,6 +161,10 @@ class Command
     money(event, *args)
   end
   
+  def Command.stats(event, *args)
+    info(event, *args)
+  end
+  
   def Command.bal(event, *args)
     money(event, *args)
   end
@@ -262,7 +266,7 @@ class Command
       af(em, "help", "not hard to guess")
       af(em, "taxes [users]", "displays tax information")
       af(em, "balance [users]", "displays balance - aliases: bal, money")
-      af(em, "info [users]", "displays everything you need to know")
+      af(em, "info [users]", "displays everything you need to know - alias: stats")
       af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "daily", "collect your daily wages")
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your daily rewards")
