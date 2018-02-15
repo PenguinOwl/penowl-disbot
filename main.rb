@@ -69,7 +69,7 @@ $bot.message(start_with: $prefix) do |event|
   puts "caught command"
   cmd = event.message.content.strip
   unless cmd[1] == ">"
-    cmd.lowercase!
+    cmd.downcase!
   end
   cmd[0] = ""
   cmd = cmd.split(" ")
