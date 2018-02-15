@@ -97,10 +97,8 @@ end
 $bot.message do |event|
   unless event.message.content[0] == "=" 
     mem = event.author
-    link do
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
-      end
+    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
     end
   end
 end
