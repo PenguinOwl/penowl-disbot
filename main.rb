@@ -85,9 +85,9 @@ $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
   event.message.delete
 end
 
-def tax(mem, e)
+def tax(mem, event)
   link do
-    mem = mem.on e.channel.server
+    mem = mem.on event.channel.server
     if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
       setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
     end
