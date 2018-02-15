@@ -46,9 +46,21 @@ def command(command,event,args)
     begin
       Command.send(command,event,*args)
     rescue ArgumentError
+      mem = event.author
+      link do
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      end
+    end
       event.respond("Argument error!")
     end
   rescue NoMethodError
+    mem = event.author
+    link do
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      end
+    end
     event.respond("That's not a command!")
   end
 end
