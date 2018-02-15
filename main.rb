@@ -382,6 +382,8 @@ class Command
 
 end
 
-$bot.game= "do "+$prefix+"help"
+$bot.ready do
+  $bot.game= "do "+$prefix+"help"
+end
 
 $bot.run 
