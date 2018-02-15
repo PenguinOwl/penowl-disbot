@@ -4,13 +4,16 @@ require 'pg'
 require 'date'
 
 $error = 0
+$open = 0
 def taxdays(mydate)
     mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
 end
 def link
-  $conn = PG::Connection.open(ENV['DATABASE_URL'])
+  if $open == 0 then $conn = PG::Connection.open(ENV['DATABASE_URL'])
+  $open += 1
   yield
-  $conn.close
+  if $open == 1 then $conn.close
+  $open -= 1
 end
 def getVals(mem, type)
   a = true
