@@ -85,10 +85,11 @@ $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
   event.message.delete
 end
 
-def tax(mem)
+def tax(mem, e)
   link do
+    mem = mem.on e.channel.server
     if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
     end
   end
 end
@@ -160,7 +161,7 @@ class Command
       mem = event.author
       if event.message.mentions.size == 0
         if args.size != 0
-          tax mem
+          tax mem, event
         end
         event.respond("**You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.**")
       end
@@ -189,7 +190,7 @@ class Command
       conc = ""
       if event.message.mentions.size == 0
         if args.size != 0
-          tax mem
+          tax mem, event
         end
         s = ""
         if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
@@ -269,7 +270,7 @@ class Command
           end
         else
           event.respond "You can only lobby three agencies: investments, taxes, and rates."
-          tax mem
+          tax mem,event
         end
       else
         event.respond "You have already lobbied today!"
@@ -307,7 +308,7 @@ class Command
           event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
         else
           event.respond "Mention someone to pay them!"
-          tax mem
+          tax mem,event
         end
       else
         event.respond "Not enough money!"
