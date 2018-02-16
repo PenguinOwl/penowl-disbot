@@ -15,7 +15,7 @@ def link
   $open = $open + 1
   yield
   if $open == 1 then
-    $conn.close 
+    $conn.close
   end
   $open = $open - 1
 end
@@ -102,10 +102,12 @@ def tax(mem, event)
 end
 
 $bot.message do |event|
-  unless event.message.content[0] == "=" 
-    mem = event.author
-    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+  link do
+    unless event.message.content[0] == "=" 
+      mem = event.author
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      end
     end
   end
 end
