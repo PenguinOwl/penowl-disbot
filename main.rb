@@ -5,6 +5,9 @@ require 'date'
 
 $error = 0
 $open = 0
+def todays
+  Time.now.strftime("%Y=%M=%H")
+end
 def taxdays(mydate)
     mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
 end
@@ -191,6 +194,10 @@ class Command
     money(event, *args)
   end
   
+  def Command.collect(event, *args)
+    money(event, *args)
+  end
+  
   def Command.info(event, *args)
     link do
       mem = event.author
@@ -234,12 +241,12 @@ class Command
     end
   end
   
-  def Command.daily(event)
+  def Command.reward(event)
     mem = event.author
     link do
-      unless getVals(mem, :day) == Date.today.to_s
+      unless getVals(mem, :day) == todays
         setStat(mem, :bal, getVals(mem, :daily).to_i + getVals(mem, :bal).to_i)
-        setStat(mem, :day, Date.today.to_s)
+        setStat(mem, :day, todays)
         event.respond "**Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank.**"
       else
         event.respond "You already collected your reward!"
@@ -294,7 +301,7 @@ class Command
       af(em, "balance [users]", "displays balance - aliases: bal, money")
       af(em, "info [users]", "displays everything you need to know - alias: stats")
       af(em, "pay (user) (amount)", "give someone some of your money")
-      af(em, "daily", "collect your daily wages")
+      af(em, "collect", "collect your hourly wages")
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your daily rewards")
       af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
