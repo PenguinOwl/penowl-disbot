@@ -6,7 +6,7 @@ require 'date'
 $error = 0
 $open = 0
 def todays
-  Time.now.strftime("%Y=%M=%H")
+  Time.now.strftime("%Y=%m=%H")
 end
 def taxdays(mydate)
     mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
@@ -195,7 +195,7 @@ class Command
   end
   
   def Command.collect(event, *args)
-    money(event, *args)
+    reward(event, *args)
   end
   
   def Command.info(event, *args)
