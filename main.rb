@@ -219,7 +219,7 @@ class Command
         else
           n = mem.username
         end
-        conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
+        conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
       end
       event.message.mentions.each do |mem|
         s = ""
@@ -235,7 +235,7 @@ class Command
         else
           n = mem.username
         end
-        conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nDaily Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
+        conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
       end
       event.respond conc
     end
