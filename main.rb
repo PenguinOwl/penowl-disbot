@@ -74,7 +74,7 @@ def command(command,event,args)
       end
       event.respond("That's not a command!")
     end
-  rescue UnableToSend
+  rescue PG::UnableToSend
     exec "herkou restart"
   end
 end
