@@ -75,23 +75,27 @@ def command(command,event,args)
       event.respond("That's not a command!")
     end
   rescue PG::UnableToSend
-    exec "herkou restart"
+    $open = 0
   end
 end
 
 $bot.message(start_with: $prefix) do |event|
-  puts "caught command"
-  cmd = event.message.content.strip
-  unless cmd[1] == ">"
-    cmd.downcase!
+  begin
+    puts "caught command"
+    cmd = event.message.content.strip
+    unless cmd[1] == ">"
+      cmd.downcase!
+    end
+    cmd[0] = ""
+    cmd = cmd.split(" ")
+    top = cmd[0]
+    cmd.map! {|e| e.gsub("_"," ")}
+    cmd.delete_at(0)
+    puts top
+    command(top, event, cmd)
+  rescue PG::UnableToSend
+    $open = 0
   end
-  cmd[0] = ""
-  cmd = cmd.split(" ")
-  top = cmd[0]
-  cmd.map! {|e| e.gsub("_"," ")}
-  cmd.delete_at(0)
-  puts top
-  command(top, event, cmd)
 end
 
 $bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
