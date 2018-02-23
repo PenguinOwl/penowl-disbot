@@ -63,7 +63,7 @@ def command(command,event,args)
       rescue ArgumentError
         mem = event.author
         link do
-          if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) &&  && getVals(mem, :freeze) == "0"
+          if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :freeze) == "0"
             setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
           end
         end
