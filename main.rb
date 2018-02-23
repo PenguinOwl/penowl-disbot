@@ -356,7 +356,7 @@ class Command
         irs = rand(2)
         if irs == 1 and diff > 0 
           event.respond "*The IRS saw your investment and decided to raise your taxes.*"
-          setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + getVals(mem, :invcost) / 1000)
+          setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + getVals(mem, :invcost).to_i / 1000)
         else
           irs = 0
         end
