@@ -32,7 +32,7 @@ def getVals(mem, type)
     end
   end
   if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0)", [mem.distinct, mem.server.id])
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, freeze) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, '0')", [mem.distinct, mem.server.id])
     $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
@@ -55,11 +55,15 @@ def command(command,event,args)
   begin
     begin
       begin
-        Command.send(command,event,*args)
+        unless getVals(mem, :freeze) == "1" and not command == "unfreeze"
+          Command.send(command,event,*args)
+        else
+          event.respond "Your account is frozen! Unfreeze it will #{$prefix}unfreeze"
+        end
       rescue ArgumentError
         mem = event.author
         link do
-          if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+          if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) &&  && getVals(mem, :freeze) == "0"
             setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
           end
         end
@@ -98,11 +102,6 @@ $bot.message(start_with: $prefix) do |event|
   end
 end
 
-$bot.message(contains: /\W?.?c.?l.?u.?t.?\W?/i) do |event|
-  event.respond "***GET THAT CANCA OUTTA HERE!!!***"
-  event.message.delete
-end
-
 def tax(mem, event)
   link do
     mem = mem.on event.channel.server
@@ -114,11 +113,9 @@ end
 
 $bot.message do |event|
   link do
-    unless event.message.content[0] == "=" 
-      mem = event.author
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
-      end
+    mem = event.author
+    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :freeze) == "0"
+      setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
     end
   end
 end
@@ -171,6 +168,12 @@ class Command
           event.respond(mem.mention + " has paid their taxes.")
         end
       end
+    end
+  end
+  
+  def Command.freeze(event)
+    link do
+      mem = event.author
     end
   end
   
