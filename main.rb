@@ -279,8 +279,8 @@ class Command
           else
             if type == "rates"
               event.respond "**You successfully lobbied the tax code!**"
-              unless getVals(mem, :taxamt).to_i == 1
-                setStat(mem, :taxamt, getVals(mem, :taxamt).to_i - 1)
+              unless getVals(mem, :taxamt).to_i < 4
+                setStat(mem, :taxamt, getVals(mem, :taxamt).to_i - rand(3))
               end
             elsif type == "investments"
               event.respond "**You successfully lobbied the stock market!**"
