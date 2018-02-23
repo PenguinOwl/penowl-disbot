@@ -55,7 +55,7 @@ def command(command,event,args)
   begin
     begin
       begin
-        unless getVals(mem, :freeze) == "1" and not command == "unfreeze"
+        unless getVals(event.author, :freeze) == "1" and not command == "unfreeze"
           Command.send(command,event,*args)
         else
           event.respond "Your account is frozen! Unfreeze it will #{$prefix}unfreeze"
