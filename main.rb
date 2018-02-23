@@ -275,7 +275,7 @@ class Command
           end
           if rand(chance) == 1
             event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE.***"
-            setStat(mem, :tax, getVals(mem, :lbcount).to_i*200 + getVals(mem, :tax).to_i)
+            setStat(mem, :tax, getVals(mem, :lbcount).to_i*getVals(mem, :invcost).to_i/2 + getVals(mem, :tax).to_i)
           else
             if type == "rates"
               event.respond "**You successfully lobbied the tax code!**"
