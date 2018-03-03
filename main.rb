@@ -313,7 +313,7 @@ class Command
       af(em, "info [users]", "displays everything you need to know - alias: stats")
       af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "collect", "collect your hourly wages")
-      af(em, "invest", "invest money (shown in #{$prefix}info) to increase your daily rewards")
+      af(em, "invest", "invest money (shown in #{$prefix}info) to increase your hourly payment")
       af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
