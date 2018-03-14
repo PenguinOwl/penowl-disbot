@@ -14,7 +14,7 @@ end
 def link
   $conn = PG::Connection.open(ENV['DATABASE_URL'])
   yield
-  unless $conn.closed? then 
+  unless $conn.finished? then 
     $conn.close 
   end
 end
