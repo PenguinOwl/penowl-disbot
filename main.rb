@@ -388,7 +388,7 @@ class Command
 end
 
 $bot.ready do
-  $bot.game= "do "+$prefix+"help"
+  $bot.game= "do "+$prefix+"help | " + (ENV['HEROKU_RELEASE_VERSION'] if ENV['DEV'] != "false")
 end
 
 $bot.run 
