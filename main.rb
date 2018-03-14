@@ -76,18 +76,24 @@ end
 
 $bot.message(start_with: $prefix) do |event|
   link do
-    puts "caught command"
-    cmd = event.message.content.strip
-    unless cmd[1] == ">"
-      cmd.downcase!
+    if event.message.content.strip[0] == $prefix
+      puts "caught command"
+      cmd = event.message.content.strip
+      unless cmd[1] == ">"
+        cmd.downcase!
+      end
+      cmd[0] = ""
+      cmd = cmd.split(" ")
+      top = cmd[0]
+      cmd.map! {|e| e.gsub("_"," ")}
+      cmd.delete_at(0)
+      puts top
+      command(top, event, cmd)
+      mem = event.author
     end
-    cmd[0] = ""
-    cmd = cmd.split(" ")
-    top = cmd[0]
-    cmd.map! {|e| e.gsub("_"," ")}
-    cmd.delete_at(0)
-    puts top
-    command(top, event, cmd)
+    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :freeze) == "0"
+      tax(mem, event)
+    end
   end
 end
 
@@ -95,15 +101,6 @@ def tax(mem, event)
   mem = mem.on event.channel.server
   if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
     setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
-  end
-end
-
-$bot.message do |event|
-  link do
-    mem = event.author
-    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :freeze) == "0"
-      tax(mem, event)
-    end
   end
 end
 
