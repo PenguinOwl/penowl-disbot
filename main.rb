@@ -159,7 +159,7 @@ class Command
       setStat(mem, :state, 1)
       event.respond("**Your account has been frozen.**")
     else
-      event.respond("**" + mem.on(event.channel.server).mention + ", are you sure that you want to freeze your account? This action will reset your balance. If your are sure you want to proceed, do*** `#{$prefix}freeze confirm`")
+      event.respond("**" + event.author.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If your are sure you want to proceed, do*** `#{$prefix}freeze confirm`")
     end
   end
   
