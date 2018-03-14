@@ -14,7 +14,9 @@ end
 def link
   $conn = PG::Connection.open(ENV['DATABASE_URL'])
   yield
-  unless $conn.closed? then $conn.close
+  unless $conn.closed? then 
+    $conn.close 
+  end
 end
 def getVals(mem, type)
   a = true
