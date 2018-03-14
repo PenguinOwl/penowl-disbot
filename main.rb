@@ -97,9 +97,11 @@ def tax(mem, event)
 end
 
 $bot.message do |event|
-  mem = event.author
-  if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :freeze) == "0"
-    setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+  link do
+    mem = event.author
+    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :freeze) == "0"
+      tax(mem, event)
+    end
   end
 end
 
