@@ -54,7 +54,7 @@ def command(command,event,args)
         unless getVals(event.author, :state) == "1" and not command == "unfreeze"
           Command.send(command,event,*args)
         else
-          event.respond "*Your account is frozen! Unfreeze it will* `#{$prefix}unfreeze`"
+          event.respond "**Your account is frozen! Unfreeze it will** `#{$prefix}unfreeze`"
         end
       rescue ArgumentError
         mem = event.author
@@ -153,13 +153,13 @@ class Command
     end
   end
   
-  def Command.freeze(event, arg="confirm")
+  def Command.freeze(event, arg="elolo")
     if arg == "confirm"
       mem = event.author
       setStat(mem, :state, 1)
-      event.respond("*Your account has been frozen*")
+      event.respond("**Your account has been frozen.**")
     else
-      event.respond(mem.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If your are sure you want to proceed, do `#{$prefix}freeze confirm`")
+      event.respond("**" + mem.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If your are sure you want to proceed, do*** `#{$prefix}freeze confirm`")
     end
   end
   
@@ -167,7 +167,7 @@ class Command
     mem = event.author
     setStat(mem, :bal, 0)
     setStat(mem, :state, 0)
-    event.respond("*Your account has been unfrozen and your balence has been reset*")
+    event.respond("**Your account has been unfrozen and your balance has been reset.**")
   end
   
   def Command.money(event, *args)
