@@ -26,7 +26,7 @@ def getVals(mem, type)
     end
   end
   if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, freeze) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, '0')", [mem.distinct, mem.server.id])
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, freeze) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, false)", [mem.distinct, mem.server.id])
     $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
