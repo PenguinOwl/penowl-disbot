@@ -69,11 +69,9 @@ def command(command,event,args)
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
       end
-      end
       event.respond("That's not a command!")
     end
   rescue PG::UnableToSend
-    $open = 0
   end
 end
 
