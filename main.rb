@@ -160,6 +160,7 @@ class Command
       event.respond("*Your account has been frozen*")
     else
       event.respond(mem.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If your are sure you want to proceed, do `#{$prefix}freeze confirm`")
+    end
   end
   
   def Command.unfreeze(event)
