@@ -5,6 +5,23 @@ require 'date'
 
 $conn = 0
 $error = 0
+class String
+  def pad
+    fin = ""
+    lg = 0
+    d = self.dup.split("\n")
+    d.each do |str|
+      length = str.center(str.length+2).length
+      lg = length if lg < length
+    end
+    fin << "+" + ("-" * lg) + "+\n"
+    d.each do |str|
+      fin << "|" + str.center(lg) + "|\n"
+    end
+    fin << "+" + ("-" * lg) + "+\n"
+    return fin
+  end
+end
 def todays
   Time.now.strftime("%Y=%m=%H")
 end
@@ -238,7 +255,7 @@ class Command
       end
       conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
     end
-    event.respond conc
+    event.respond conc.pad
   end
   
   def Command.reward(event)
