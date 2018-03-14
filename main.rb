@@ -3,6 +3,7 @@ require 'open-uri'
 require 'pg'
 require 'date'
 
+$conn = 0
 $error = 0
 def todays
   Time.now.strftime("%Y=%m=%H")
@@ -11,37 +12,33 @@ def taxdays(mydate)
     mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
 end
 def link
-  d = PG::Connection.open(ENV['DATABASE_URL'])
-  yield(d)
-  d.close
+  $conn = PG::Connection.open(ENV['DATABASE_URL'])
+  yield
+  $conn.close
 end
 def getVals(mem, type)
-  link do |conn|
-    a = true
-    type = type.to_s
-    conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
+  a = true
+  type = type.to_s
+  $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
+    result.each do |row|
+      return row.values_at(type).first
+      a = false
+    end
+  end
+  if a
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, freeze) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, '0')", [mem.distinct, mem.server.id])
+    $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
       end
     end
-    if a
-      conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, freeze) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, '0')", [mem.distinct, mem.server.id])
-      conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
-        result.each do |row|
-          return row.values_at(type).first
-          a = false
-        end
-      end
-    end
   end
 end
 def setStat(mem, type, val)
-  link do |conn|
-    type = type.to_s
-    getVals(mem, :tax)
-    conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
-  end
+  type = type.to_s
+  getVals(mem, :tax)
+  $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
 end
 $prefix= '='
 puts "key", ENV['KEY']
@@ -76,18 +73,20 @@ def command(command,event,args)
 end
 
 $bot.message(start_with: $prefix) do |event|
-  puts "caught command"
-  cmd = event.message.content.strip
-  unless cmd[1] == ">"
-    cmd.downcase!
+  link do
+    puts "caught command"
+    cmd = event.message.content.strip
+    unless cmd[1] == ">"
+      cmd.downcase!
+    end
+    cmd[0] = ""
+    cmd = cmd.split(" ")
+    top = cmd[0]
+    cmd.map! {|e| e.gsub("_"," ")}
+    cmd.delete_at(0)
+    puts top
+    command(top, event, cmd)
   end
-  cmd[0] = ""
-  cmd = cmd.split(" ")
-  top = cmd[0]
-  cmd.map! {|e| e.gsub("_"," ")}
-  cmd.delete_at(0)
-  puts top
-  command(top, event, cmd)
 end
 
 def tax(mem, event)
