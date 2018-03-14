@@ -16,7 +16,11 @@ class String
     end
     fin << "+" + ("-" * lg) + "+\n"
     d.each do |str|
-      fin << "|" + str.center(lg) + "|\n"
+      if str == "$$"
+        fin << "+" + ("-" * lg) + "+\n"
+      else
+        fin << "|" + str.center(lg) + "|\n"
+      end
     end
     fin << "+" + ("-" * lg) + "+\n"
     return fin
@@ -237,7 +241,7 @@ class Command
       else
         n = mem.username
       end
-      conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
+      conc = "**" + n + "**'s Stats\n$$\nTax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}"
     end
     event.message.mentions.each do |mem|
       s = ""
@@ -253,9 +257,9 @@ class Command
       else
         n = mem.username
       end
-      conc = "**" + n + "**'s Stats```Tax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}```"
+      conc = "**" + n + "**'s Stats\n$$\nTax: #{s}\nBalance: $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}\nHourly Reward: $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01}\nTax Rate: $#{sprintf "%.2f", getVals(mem, :taxamt).to_f * 0.01} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01}\nTimes Lobbied: #{getVals(mem, :lbcount)}"
     end
-    event.respond conc.pad
+    event.respond "```" + conc.pad + "```" 
   end
   
   def Command.reward(event)
