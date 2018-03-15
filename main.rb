@@ -262,7 +262,7 @@ class Command
       end
       s = ""
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = getVals(mem, :tax).mon
+         s = "$" + getVals(mem, :tax).mon
       else
          s = "Paid"
       end
@@ -279,7 +279,7 @@ class Command
       s = ""
       mem = mem.on(event.channel.server)
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = getVals(mem, :tax).mon
+         s = "$" + getVals(mem, :tax).mon
       else
          s = "Paid"
       end
