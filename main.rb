@@ -251,8 +251,7 @@ class Command
   end
   
   def Command.stats(event, *args)
-    args << "noborder"
-    info(event, *args)
+    info(event, *args, "noborder")
   end
   
   def Command.bal(event, *args)
