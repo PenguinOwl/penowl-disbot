@@ -29,7 +29,7 @@ class String
     d = self.dup
     d = d.to_f * 0.01
     t = -1
-    d = ""
+    pr = ""
     t, pr = case d
       when (10^6)..((10^9)-1); [1, "M"]
       when (10^9)..((10^12)-1); [2, "B"]
