@@ -25,6 +25,22 @@ class String
     fin << "+" + ("-" * lg) + "+\n"
     return fin
   end
+  def mon
+    d = self.dup
+    d = d.to_f * 0.01
+    t, pr = case d
+      when (10^6)..((10^9)-1); [1, "M"]
+      when (10^9)..((10^12)-1); [2, "B"]
+      when (10^12)..((10^15)-1); [3, "T"]
+      when (10^15)..((10^18)-1); [4, "Qu"]
+      when (10^18)..((10^21)-1); [5, "Qi"]
+      when <(10^21); [6, "S"]
+    else; [-1,""]
+    end
+    d = d / 10^((3 * t) + 3)
+    r = sprintf "%.2f", d
+    r << pr
+    return r
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
@@ -159,7 +175,7 @@ class Command
     mem = event.author
     if event.message.mentions.size == 0
       if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        event.respond("You owe $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. You have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        event.respond("You owe $#{getVals(mem, :tax).mon} to the IRS. You have $#{getVals(mem, :bal).mon}.")
       else
         event.respond("You have paid your taxes.")
       end
@@ -167,7 +183,7 @@ class Command
     event.message.mentions.each do |mem|
       if getVals(mem.on(event.channel.server), :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         mem = mem.on(event.channel.server)
-        event.respond(mem.mention + " owes $#{sprintf "%.2f", getVals(mem, :tax).to_f * 0.01} to the IRS. They have $#{sprintf "%.2f", getVals(mem, :bal).to_f * 0.01}.")
+        event.respond(mem.mention + " owes $#{getVals(mem, :tax).mon} to the IRS. They have $#{getVals(mem, :bal).mon}.")
       else
         event.respond(mem.mention + " has paid their taxes.")
       end
