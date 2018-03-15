@@ -127,7 +127,7 @@ def command(command,event,args)
   end
 end
 
-$bot.message(start_with: $prefix) do |event|
+$bot.message() do |event|
   link do
     if event.message.content.strip[0] == $prefix
       puts "caught command"
