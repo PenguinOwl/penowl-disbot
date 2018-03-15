@@ -152,7 +152,7 @@ $bot.message() do |event|
       command(top, event, cmd)
       mem = event.author
     end
-    tax(mem, event)
+    tax(event.author, event)
   end
 end
 
