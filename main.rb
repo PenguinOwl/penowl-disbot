@@ -158,12 +158,13 @@ $bot.message() do |event|
 end
 
 def tax(dfs, event)
-  puts dfs
-  mem = dfs.on(event.channel.server)
-  puts mem
-  puts mem.distinct
-  if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-    setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
+  begin
+    mem = dfs.on(event.channel.server)
+    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
+    end
+  rescue NoMethodError
+    puts "Couldn't tax #{dsf.distinct}."
   end
 end
 
@@ -254,7 +255,7 @@ class Command
       a = 1
       result.each do |row|
         r = row
-        out << "\n#{a}. #{r[0]} - #{r[1].mon.to_s}"
+        out << "\n#{a}. #{r["userid"]} - #{r["bal"].mon.to_s}"
       end
     end
     event.respond("```" + out.pad("ljust") + "```")
