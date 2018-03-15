@@ -40,7 +40,10 @@ class String
     else
       [-1, ""]
     end
-    d = d / (10^((3 * t) + 2))
+    t = 3 * t
+    t = t + 2
+    t = 10^t
+    d = d / t
     r = sprintf "%.2f", d
     r << pr
     return r
