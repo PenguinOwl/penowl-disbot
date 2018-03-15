@@ -157,7 +157,7 @@ $bot.message() do |event|
 end
 
 def tax(mem, event)
-  mem = mem.on event.channel.server
+  mem = mem.on(event.channel.server)
   if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
     setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
   end
