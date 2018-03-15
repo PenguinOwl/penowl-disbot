@@ -6,7 +6,7 @@ require 'date'
 $conn = 0
 $error = 0
 class String
-  def pad
+  def pad(align="center")
     fin = ""
     lg = 0
     d = self.dup.split("\n")
@@ -19,7 +19,18 @@ class String
       if str == "$$"
         fin << "+" + ("-" * lg) + "+\n"
       else
-        fin << "|" + str.center(lg) + "|\n"
+        dec = align
+        if str[0..1] = "~<"
+          dec = "ljust"
+          str[0..1] = ""
+        elsif str[0..1] = "~>"
+          dec = "rjust"
+          str[0..1] = ""
+        elsif str[0..1] = "~^"
+          dec = "center"
+          str[0..1] = ""
+        end
+        fin << "|" + str.send(dec, lg) + "|\n"
       end
     end
     fin << "+" + ("-" * lg) + "+\n"
@@ -230,6 +241,19 @@ class Command
       mem = mem.on(event.channel.server)
       event.respond("**" + mem.mention + " has $#{getVals(mem, :bal).mon}.**")
     end
+  end
+  
+  def Command.top(event)
+    out = "~^Leaderboard of #{event.channel.server.name}\n$$"
+    serverid = event.channel.server.id
+    $conn.exec_params("select userid, bal from users where serverid=$1 and state=0 order by bal asc limit 10", [mem.server.id]) do |result|
+      a = 1
+      result.each do |row|
+        r = row.values_at(type)
+        out << "\n#{a}. #{r[0]} - #{r[1].mon.to_s}"
+      end
+    end
+    event.respond("```" + out.pad("ljust") + "```")
   end
   
   def Command.id(event, *args)
