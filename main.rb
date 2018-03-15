@@ -237,6 +237,20 @@ class Command
     end
   end
   
+  def Command.id(event, *args)
+    mem = event.author
+    if event.message.mentions.size == 0
+      if args.size != 0
+        tax mem, event
+      end
+      event.respond("**You are id $#{getVals(mem, :id)}.**")
+    end
+    event.message.mentions.each do |mem|
+      mem = mem.on(event.channel.server)
+      event.respond("**" + mem.mention + " is id $#{getVals(mem, :id)}.**")
+    end
+  end
+  
   def Command.balance(event, *args)
     money(event, *args)
   end
