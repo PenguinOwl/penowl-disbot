@@ -152,12 +152,16 @@ $bot.message() do |event|
       command(top, event, cmd)
       mem = event.author
     end
+    puts event.author
     tax(event.author, event)
   end
 end
 
 def tax(dfs, event)
+  puts dfs
   mem = dfs.on(event.channel.server)
+  puts mem
+  puts mem.distinct
   if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
     setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
   end
