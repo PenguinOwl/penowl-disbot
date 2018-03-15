@@ -86,30 +86,30 @@ $bot = Discordrb::Bot.new token: ENV['KEY'], client_id: ENV['CLIENT']
 puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
-  begin
-    begin
-      begin
+#  begin
+#    begin
+#      begin
         unless getVals(event.author, :state) == "1" and not command == "unfreeze"
           Command.send(command,event,*args)
         else
           event.respond "**Your account is frozen! Unfreeze it will** `#{$prefix}unfreeze`"
         end
-      rescue ArgumentError
-        mem = event.author
-        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :state) == "0"
-          setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
-        end
-        event.respond("Argument error!")
-      end
-    rescue NoMethodError
-      mem = event.author
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
-      end
-      event.respond("That's not a command!")
-    end
-  rescue PG::UnableToSend
-  end
+#      rescue ArgumentError
+#        mem = event.author
+#        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :state) == "0"
+#          setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+#        end
+#        event.respond("Argument error!")
+#      end
+#    rescue NoMethodError
+#      mem = event.author
+#      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+#        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+#      end
+#      event.respond("That's not a command!")
+#    end
+#  rescue PG::UnableToSend
+#  end
 end
 
 $bot.message(start_with: $prefix) do |event|
