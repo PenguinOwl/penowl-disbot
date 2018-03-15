@@ -37,7 +37,7 @@ class String
       when d < (10^21); [6, "S"]
     else; [-1,""]
     end
-    d = d / (10^(3 * t + 3))
+    d = d / (10^((3 * t) + 3))
     r = sprintf "%.2f", d
     r << pr
     return r
