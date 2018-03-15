@@ -41,6 +41,7 @@ class String
     r = sprintf "%.2f", d
     r << pr
     return r
+  end
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
