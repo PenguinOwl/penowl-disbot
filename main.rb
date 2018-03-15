@@ -97,7 +97,7 @@ def command(command,event,args)
     unless getVals(event.author, :state) == "1" and not command == "unfreeze"
       Command.send(command,event,*args)
     else
-      event.respond "**Your account is frozen! Unfreeze it will** `#{$prefix}unfreeze`"
+      event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
     end
   else
     begin
@@ -106,7 +106,7 @@ def command(command,event,args)
           unless getVals(event.author, :state) == "1" and not command == "unfreeze"
             Command.send(command,event,*args)
           else
-            event.respond "**Your account is frozen! Unfreeze it will** `#{$prefix}unfreeze`"
+            event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
           end
         rescue ArgumentError
           mem = event.author
@@ -413,7 +413,7 @@ class Command
       irs = rand(2)
       if irs == 1 and diff > 0 
         event.respond "*The IRS saw your investment and decided to raise your taxes.*"
-        setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + getVals(mem, :invcost).to_i / 10)
+        setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + getVals(mem, :invcost).to_i / 100)
       else
         irs = 0
       end
