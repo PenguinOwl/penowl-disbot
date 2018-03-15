@@ -249,7 +249,7 @@ class Command
     $conn.exec_params("select userid, bal from users where serverid=$1 and state=0 order by bal asc limit 10", [event.channel.server.id]) do |result|
       a = 1
       result.each do |row|
-        r = row.values_at(type)
+        r = row
         out << "\n#{a}. #{r[0]} - #{r[1].mon.to_s}"
       end
     end
