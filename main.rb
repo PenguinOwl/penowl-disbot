@@ -141,9 +141,7 @@ $bot.message() do |event|
       command(top, event, cmd)
       mem = event.author
     end
-    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s) && getVals(mem, :state) == "0"
-      tax(mem, event)
-    end
+    tax(mem, event)
   end
 end
 
