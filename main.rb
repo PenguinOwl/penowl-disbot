@@ -20,13 +20,13 @@ class String
         fin << "+" + ("-" * lg) + "+\n"
       else
         dec = align
-        if str[0..1] = "~<"
+        if str[0..1] == "~<"
           dec = "ljust"
-          str[0..1] = ""
-        elsif str[0..1] = "~>"
+          str[0..1] == ""
+        elsif str[0..1] == "~>"
           dec = "rjust"
-          str[0..1] = ""
-        elsif str[0..1] = "~^"
+          str[0..1] == ""
+        elsif str[0..1] == "~^"
           dec = "center"
           str[0..1] = ""
         end
