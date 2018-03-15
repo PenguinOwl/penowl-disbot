@@ -45,6 +45,7 @@ class String
     t = 10**(t)
     d = d / t
     r = sprintf "%.2f", d
+    r = r.to_s.reverse.gsub(/(\d{3})(?=\d)/, '\\1,').reverse
     r << pr
     return r
   end
