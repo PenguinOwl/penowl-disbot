@@ -41,8 +41,8 @@ class String
       [-1, ""]
     end
     t = 3 * t
-    t = t + 2
-    t = 10^t
+    t = t + 3
+    t = 10^(t)
     d = d / t
     r = sprintf "%.2f", d
     r << pr
