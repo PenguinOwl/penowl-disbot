@@ -242,6 +242,7 @@ class Command
   end
   
   def Command.stats(event, *args)
+    args << "noborder"
     info(event, *args)
   end
   
@@ -291,7 +292,11 @@ class Command
       end
       conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{getVals(mem, :bal).mon}\nHourly Reward: $#{getVals(mem, :daily).mon}\nTax Rate: $#{getVals(mem, :taxamt).mon} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{getVals(mem, :invcost).mon}\nTimes Lobbied: #{getVals(mem, :lbcount)}"
     end
-    event.respond "```" + conc.pad + "```" 
+    if args.include? "noborder"
+      event.respond "```" + conc + "```"
+    else
+      event.respond "```" + conc.pad + "```"
+    end
   end
   
   def Command.reward(event)
