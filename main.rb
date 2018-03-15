@@ -42,7 +42,7 @@ class String
     end
     t = 3 * t
     t = t + 3
-    t = 10^(t)
+    t = 10^(t-1)
     d = d / t
     r = sprintf "%.2f", d
     r << pr
