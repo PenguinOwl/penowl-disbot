@@ -28,6 +28,8 @@ class String
   def mon
     d = self.dup
     d = d.to_f * 0.01
+    t = -1
+    d = ""
     t, pr = case d
       when (10^6)..((10^9)-1); [1, "M"]
       when (10^9)..((10^12)-1); [2, "B"]
@@ -35,7 +37,6 @@ class String
       when (10^15)..((10^18)-1); [4, "Qu"]
       when (10^18)..((10^21)-1); [5, "Qi"]
       when d < (10^21); [6, "S"]
-    else; [-1,""]
     end
     d = d / (10^((3 * t) + 3))
     r = sprintf "%.2f", d
