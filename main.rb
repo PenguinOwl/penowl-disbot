@@ -102,27 +102,24 @@ def command(command,event,args)
   else
     begin
       begin
-        begin
-          unless getVals(event.author, :state) == "1" and not command == "unfreeze"
-            Command.send(command,event,*args)
-          else
-            event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
-          end
-        rescue ArgumentError
-          mem = event.author
-          if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :state) == "0"
-            setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
-          end
-          event.respond("Argument error!")
+        unless getVals(event.author, :state) == "1" and not command == "unfreeze"
+          Command.send(command,event,*args)
+        else
+          event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
         end
-      rescue NoMethodError
+      rescue ArgumentError
         mem = event.author
-        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :state) == "0"
           setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
         end
-        event.respond("That's not a command!")
+        event.respond("Argument error!")
       end
-    rescue PG::UnableToSend
+    rescue NoMethodError
+      mem = event.author
+      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      end
+      event.respond("That's not a command!")
     end
   end
 end
