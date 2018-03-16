@@ -288,6 +288,7 @@ class Command
       res.each do |row|
         puts row.class
         dec = true if row.first.include? "#"
+        puts dec
       end
     end
     if dec
