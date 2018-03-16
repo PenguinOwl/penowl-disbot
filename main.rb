@@ -5,6 +5,12 @@ require 'date'
 
 $conn = 0
 $error = 0
+$pres = <<here
+  ___ ___ ___ ___ _____ ___ ___ ___ 
+ | _ \ _ \ __/ __|_   _|_ _/ __| __|
+ |  _/   / _|\__ \ | |  | | (_ | _| 
+ |_| |_|_\___|___/ |_| |___\___|___|
+here
 class String
   def pad(align="center")
     fin = ""
@@ -61,6 +67,9 @@ class String
     return r
   end
 end
+def pres(mem)
+  log(mget(mem, :bal)).to_i - 5
+end
 def todays
   Time.now.strftime("%Y=%m=%H")
 end
@@ -74,7 +83,31 @@ def link
     $conn.close 
   end
 end
-def getVals(mem, type)
+def pGet(mem, type)
+  a = true
+  type = type.to_s
+  $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct]) do |result|
+    result.each do |row|
+      return row.values_at(type).first
+      a = false
+    end
+  end
+  if a
+    $conn.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.distinct])
+    $conn.exec_params("select * from users where discrim=$1", [mem.distinct, mem.server.id]) do |result|
+      result.each do |row|
+        return row.values_at(type).first
+        a = false
+      end
+    end
+  end
+end
+def pSet(mem, type, val)
+  type = type.to_s
+  mget(mem, :lvl)
+  $conn.exec_params("update users set #{type}=$1 where discrim=$2", [val, mem.distinct, mem.server.id])
+end
+def mget(mem, type)
   a = true
   type = type.to_s
   $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
@@ -93,9 +126,9 @@ def getVals(mem, type)
     end
   end
 end
-def setStat(mem, type, val)
+def mset(mem, type, val)
   type = type.to_s
-  getVals(mem, :tax)
+  mget(mem, :tax)
   $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
 end
 $prefix= '='
@@ -105,7 +138,7 @@ puts $bot.invite_url
 puts ARGV[0]
 def command(command,event,args)
   if ENV['DEBUG'] == 'true'
-    unless getVals(event.author, :state) == "1" and not command == "unfreeze"
+    unless mget(event.author, :state) == "1" and not command == "unfreeze"
       Command.send(command,event,*args)
     else
       event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
@@ -113,22 +146,22 @@ def command(command,event,args)
   else
     begin
       begin
-        unless getVals(event.author, :state) == "1" and not command == "unfreeze"
+        unless mget(event.author, :state) == "1" and not command == "unfreeze"
           Command.send(command,event,*args)
         else
           event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
         end
       rescue ArgumentError
         mem = event.author
-        if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && getVals(mem, :state) == "0"
-          setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+        if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && mget(mem, :state) == "0"
+          mset(event.author, :tax, mget(event.author, :tax).to_i+mget(event.author, :taxamt).to_i)
         end
         event.respond("Argument error!")
       end
     rescue NoMethodError
       mem = event.author
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        setStat(event.author, :tax, getVals(event.author, :tax).to_i+getVals(event.author, :taxamt).to_i)
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        mset(event.author, :tax, mget(event.author, :tax).to_i+mget(event.author, :taxamt).to_i)
       end
       event.respond("That's not a command!")
     end
@@ -160,8 +193,8 @@ end
 def tax(dfs, event)
   begin
     mem = dfs.on(event.channel.server)
-    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
+    if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      mset(mem, :tax, mget(event.author, :tax).to_i+mget(mem, :taxamt).to_i)
     end
   rescue NoMethodError
   end
@@ -200,16 +233,16 @@ class Command
   def Command.taxes(event, *args)
     mem = event.author
     if event.message.mentions.size == 0
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        event.respond("You owe $#{getVals(mem, :tax).mon} to the IRS. You have $#{getVals(mem, :bal).mon}.")
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        event.respond("You owe $#{mget(mem, :tax).mon} to the IRS. You have $#{mget(mem, :bal).mon}.")
       else
         event.respond("You have paid your taxes.")
       end
     end
     event.message.mentions.each do |mem|
-      if getVals(mem.on(event.channel.server), :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      if mget(mem.on(event.channel.server), :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         mem = mem.on(event.channel.server)
-        event.respond(mem.mention + " owes $#{getVals(mem, :tax).mon} to the IRS. They have $#{getVals(mem, :bal).mon}.")
+        event.respond(mem.mention + " owes $#{mget(mem, :tax).mon} to the IRS. They have $#{mget(mem, :bal).mon}.")
       else
         event.respond(mem.mention + " has paid their taxes.")
       end
@@ -219,17 +252,33 @@ class Command
   def Command.freeze(event, arg="elolo")
     if arg == "confirm"
       mem = event.author
-      setStat(mem, :state, 1)
+      mset(mem, :state, 1)
       event.respond("**Your account has been frozen.**")
     else
       event.respond("**" + event.author.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If you are sure you want to proceed, do** `#{$prefix}freeze confirm`")
     end
   end
   
+  def Command.prestige(event, arg="elolo")
+    mem = event.author
+    if pres mem > 0
+      if arg == "confirm"
+        mem = event.author
+        pset(mem, :lvl, pget(mem, :lvl).to_i + 1)
+        $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
+        event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "~^" + mem.distinct).pad + "```")
+      else
+        event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account except your prestige level and upgrades. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
+      end
+    else
+      event.respond "You need at least 1M to prestige!"
+    end
+  end
+  
   def Command.unfreeze(event)
     mem = event.author
-    setStat(mem, :bal, 0)
-    setStat(mem, :state, 0)
+    mset(mem, :bal, 0)
+    mset(mem, :state, 0)
     event.respond("**Your account has been unfrozen and your balance has been reset.**")
   end
   
@@ -239,21 +288,21 @@ class Command
       if args.size != 0
         tax mem, event
       end
-      event.respond("**You have $#{getVals(mem, :bal).mon}.**")
+      event.respond("**You have $#{mget(mem, :bal).mon}.**")
     end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
-      event.respond("**" + mem.mention + " has $#{getVals(mem, :bal).mon}.**")
+      event.respond("**" + mem.mention + " has $#{mget(mem, :bal).mon}.**")
     end
   end
   
   def Command.top(event, type="daily")
-    if ["bal","daily","invcount","lbcount"].include? type
+    if ["bal","daily","invest","lbcount"].include? type
       out = "~^Leaderboard of #{event.channel.server.name}"
       out << "\n~^By " + case type
         when "bal"; "Balance"
         when "daily"; "Hourly Rewards"
-        when "invcount"; "Investments"
+        when "invest"; "Investments"
         when "lbcount"; "Lobbys"
       end + "\n$$"
       serverid = event.channel.server.id
@@ -261,7 +310,7 @@ class Command
         a = 1
         result.each do |row|
           r = row
-          out << "\n #{a.to_s}. #{r["userid"]} - #{ if ["invcount","lbcount"].include? type then "$" else "" end}#{r[type].mon.to_s}"
+          out << "\n #{a.to_s}. #{r["userid"]} - #{ if ["invest","lbcount"].include? type then "$#{r[type].mon.to_s}" else "#{r[type].to_s}" end}"
           a = a + 1
         end
       end
@@ -277,11 +326,11 @@ class Command
       if args.size != 0
         tax mem, event
       end
-      event.respond("**You are id $#{getVals(mem, :id)}.**")
+      event.respond("**You are id $#{mget(mem, :id)}.**")
     end
     event.message.mentions.each do |mem|
       mem = mem.on(event.channel.server)
-      event.respond("**" + mem.mention + " is id $#{getVals(mem, :id)}.**")
+      event.respond("**" + mem.mention + " is id $#{mget(mem, :id)}.**")
     end
   end
   
@@ -313,8 +362,8 @@ class Command
         tax mem, event
       end
       s = ""
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = "$" + getVals(mem, :tax).mon
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+         s = "$" + mget(mem, :tax).mon
       else
          s = "Paid"
       end
@@ -325,13 +374,13 @@ class Command
       else
         n = mem.username
       end
-      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{getVals(mem, :bal).mon}\nHourly Reward: $#{getVals(mem, :daily).mon}\nTax Rate: $#{getVals(mem, :taxamt).mon} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{getVals(mem, :invcost).mon}\nTimes Lobbied: #{getVals(mem, :lbcount)}"
+      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
     end
     event.message.mentions.each do |mem|
       s = ""
       mem = mem.on(event.channel.server)
-      if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = "$" + getVals(mem, :tax).mon
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+         s = "$" + mget(mem, :tax).mon
       else
          s = "Paid"
       end
@@ -341,7 +390,7 @@ class Command
       else
         n = mem.username
       end
-      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{getVals(mem, :bal).mon}\nHourly Reward: $#{getVals(mem, :daily).mon}\nTax Rate: $#{getVals(mem, :taxamt).mon} per message\nInvestments: #{getVals(mem, :invest).to_s}\nInvestment Cost: $#{getVals(mem, :invcost).mon}\nTimes Lobbied: #{getVals(mem, :lbcount)}"
+      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
     end
     if args.include? "noborder"
       event.respond "```" + conc + "```"
@@ -352,10 +401,10 @@ class Command
   
   def Command.reward(event)
     mem = event.author
-    unless getVals(mem, :day) == todays
-      setStat(mem, :bal, getVals(mem, :daily).to_i + getVals(mem, :bal).to_i)
-      setStat(mem, :day, todays)
-      event.respond "**Collected $#{sprintf "%.2f", getVals(mem, :daily).to_f * 0.01} from the bank.**"
+    unless mget(mem, :day) == todays
+      mset(mem, :bal, mget(mem, :daily).to_i + mget(mem, :bal).to_i)
+      mset(mem, :day, todays)
+      event.respond "**Collected $#{sprintf "%.2f", mget(mem, :daily).to_f * 0.01} from the bank.**"
     else
       event.respond "You already collected your reward!"
     end
@@ -363,29 +412,29 @@ class Command
   
   def Command.lobby(event, type)
     mem = event.author
-    unless getVals(mem, :lbday) == Date.today.to_s
+    unless mget(mem, :lbday) == Date.today.to_s
       if ["taxes", "investments", "rates"].include? type
-        setStat(mem, :lbday, Date.today.to_s)
-        setStat(mem, :lbcount, getVals(mem, :lbcount).to_i + 1)
+        mset(mem, :lbday, Date.today.to_s)
+        mset(mem, :lbcount, mget(mem, :lbcount).to_i + 1)
         chance = 4
         if Date.today.sunday? or Date.today.saturday?
           chance = 9
         end
         if rand(chance) == 1
           event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE.***"
-          setStat(mem, :tax, getVals(mem, :lbcount).to_i*getVals(mem, :invcost).to_i/2 + getVals(mem, :tax).to_i)
+          mset(mem, :tax, mget(mem, :lbcount).to_i*mget(mem, :invcost).to_i/2 + mget(mem, :tax).to_i)
         else
           if type == "rates"
             event.respond "**You successfully lobbied the tax code!**"
-            unless getVals(mem, :taxamt).to_i < 4
-              setStat(mem, :taxamt, getVals(mem, :taxamt).to_i - rand(3))
+            unless mget(mem, :taxamt).to_i < 4
+              mset(mem, :taxamt, mget(mem, :taxamt).to_i - rand(3))
             end
           elsif type == "investments"
             event.respond "**You successfully lobbied the stock market!**"
-            setStat(mem, :invcost, getVals(mem, :invcost).to_i - (getVals(mem, :invcost).to_i / 3))
+            mset(mem, :invcost, mget(mem, :invcost).to_i - (mget(mem, :invcost).to_i / 3))
           elsif type == "taxes"
             event.respond "**You successfully lobbied your local tax collecter!**"
-            setStat(mem, :tax, getVals(mem, :tax).to_i / 2) 
+            mset(mem, :tax, mget(mem, :tax).to_i / 2) 
           end
         end
       else
@@ -419,40 +468,47 @@ class Command
   def Command.pay(event, ment, amt)
     mem = event.author
     amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
-    bal = getVals(mem, :bal).to_i
-    if amt <= getVals(mem, :bal).to_i
-      if event.message.mentions.size == 1
-        mem2 = event.message.mentions[0].on(event.channel.server)
-        setStat(mem, :bal, bal-amt)
-        setStat(mem2, :bal, getVals(mem2, :bal).to_i + amt)
-        event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
+    bal = mget(mem, :bal).to_i
+    if mget(mem, :payc).to_i < Time.at(Time.now-60)
+      if mget(event.message.mentions[0].on(event.channel.server), :invcost).to_i*2 < amt
+        if amt <= mget(mem, :bal).to_i
+          if event.message.mentions.size == 1
+            mem2 = event.message.mentions[0].on(event.channel.server)
+            mset(mem, :bal, bal-amt)
+            mset(mem2, :bal, mget(mem2, :bal).to_i + amt)
+            event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
+          else
+            event.respond "Mention someone to pay them!"
+            tax mem,event
+          end
+        else
+          event.respond "Not enough money!"
+        end
       else
-        event.respond "Mention someone to pay them!"
-        tax mem,event
-      end
+        event.respond "You are paying this user too much!"
     else
-      event.respond "Not enough money!"
+      event.respond "You can only pay someone once per minute!"
     end
   end
     
   def Command.invest(event)
     mem = event.author.on(event.channel.server)
-    if getVals(mem, :invcost).to_i <= getVals(mem, :bal).to_i
-      event.respond "*Invested $#{sprintf "%.2f", getVals(mem, :invcost).to_f * 0.01} into the stock market.*"
-      setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :invcost).to_i)
-      diff = (rand(getVals(mem, :invcost).to_i/5) - getVals(mem, :invcost).to_i/20) * 2
+    if mget(mem, :invcost).to_i <= mget(mem, :bal).to_i
+      event.respond "*Invested $#{sprintf "%.2f", mget(mem, :invcost).to_f * 0.01} into the stock market.*"
+      mset(mem, :bal, mget(mem, :bal).to_i - mget(mem, :invcost).to_i)
+      diff = (rand(mget(mem, :invcost).to_i/5) - mget(mem, :invcost).to_i/20) * 2
       if diff > 0
         event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
       else
         event.respond "**Oh no!** Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * -0.01} cut."
       end
-      setStat(mem, :invcost, getVals(mem, :invcost).to_i + (getVals(mem, :invcost).to_i / 5) + diff)
-      setStat(mem, :daily, getVals(mem, :daily).to_i + diff)
-      setStat(mem, :invest, getVals(mem, :invest).to_i + 1)
+      mset(mem, :invcost, mget(mem, :invcost).to_i + (mget(mem, :invcost).to_i / 5) + diff)
+      mset(mem, :daily, mget(mem, :daily).to_i + diff)
+      mset(mem, :invest, mget(mem, :invest).to_i + 1)
       irs = rand(2)
       if irs == 1 and diff > 0 
         event.respond "*The IRS saw your investment and decided to raise your taxes.*"
-        setStat(mem, :taxamt, getVals(mem, :taxamt).to_i + getVals(mem, :invcost).to_i / 100)
+        mset(mem, :taxamt, mget(mem, :taxamt).to_i + mget(mem, :invcost).to_i / 100)
       else
         irs = 0
       end
@@ -463,12 +519,12 @@ class Command
   
   def Command.paytaxes(event)
     mem = event.author
-    if getVals(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      if getVals(mem, :tax).to_i <= getVals(mem, :bal).to_i
+    if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      if mget(mem, :tax).to_i <= mget(mem, :bal).to_i
         if taxdays(Date.today)
-          setStat(mem, :bal, getVals(mem, :bal).to_i - getVals(mem, :tax).to_i)
-          setStat(mem, :tax, 0)
-          setStat(mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
+          mset(mem, :bal, mget(mem, :bal).to_i - mget(mem, :tax).to_i)
+          mset(mem, :tax, 0)
+          mset(mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
           event.respond "Taxes paid for the month of " + Date.today.strftime("%B") + "."
         else
           event.respond "You may only pay your taxes on the last 5 days of the month!"
