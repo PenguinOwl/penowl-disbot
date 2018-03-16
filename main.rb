@@ -2,7 +2,6 @@ require 'discordrb'
 require 'open-uri'
 require 'pg'
 require 'date'
-require 'math'
 
 $conn = 0
 $error = 0
