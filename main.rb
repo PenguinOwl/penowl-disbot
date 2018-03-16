@@ -264,7 +264,8 @@ class Command
     if pres(mem) > 0
       if arg == "confirm"
         mem = event.author
-        pset(mem, :lvl, pget(mem, :lvl).to_i + 1)
+        pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
+        pset(mem, :points, pget(mem, :points).to_i + pres(mem))
         $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
         event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
       else
@@ -272,6 +273,20 @@ class Command
       end
     else
       event.respond "You need at least 1M to prestige!"
+    end
+  end
+  
+  def Command.upgrade(event, type)
+    if ["bonus", "steal", "auto"].includes? type
+      mem = event.author.on(event.channel.server)
+      if pget(mem, :points).to_i>(pget(mem, type.to_sym).to_i+1)
+        pset(mem, type.to_sym, (pget(mem, type.to_sym).to_i+1))
+        event.respond "**Upgraded your** `#{type}` **skill to level #{pget(mem, type.to_sym)}.**"
+      else
+        event.respond "Not enough prestige points!"
+      end
+    else
+      event.respond "You can only upgrade bonus, steal, and auto."
     end
   end
   
@@ -404,7 +419,14 @@ class Command
     unless mget(mem, :day) == todays
       mset(mem, :bal, mget(mem, :daily).to_i + mget(mem, :bal).to_i)
       mset(mem, :day, todays)
-      event.respond "**Collected $#{sprintf "%.2f", mget(mem, :daily).to_f * 0.01} from the bank.**"
+      event.respond "**Collected $#{mget(mem, :daily).mon} from the bank.**"
+      pb = pget(mem, :bonus).to_i
+      if pb > 0
+        bonus = 0.03 * pb
+        mset(mem, :bal, (mget(mem, :daily).to_f.*bonus).to_i + mget(mem, :bal).to_i)
+        per = bonus*100.to_i
+        event.respond "*+#{per}% from prestige*"
+      end
     else
       event.respond "You already collected your reward!"
     end
