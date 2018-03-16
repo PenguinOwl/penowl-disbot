@@ -300,6 +300,7 @@ class Command
     pget(mem, :tax)
     $conn.exec_params("select discrim from prestige where discrim=$1", [mem.distinct.to_s]).each do |res|
       res.each do |row|
+        puts row.first
         dec = true if row.first.include? "#"
       end
     end
