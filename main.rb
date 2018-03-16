@@ -164,7 +164,6 @@ def tax(dfs, event)
       setStat(mem, :tax, getVals(event.author, :tax).to_i+getVals(mem, :taxamt).to_i)
     end
   rescue NoMethodError
-    puts "Couldn't tax #{dsf.distinct}."
   end
 end
 
