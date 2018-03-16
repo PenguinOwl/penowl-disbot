@@ -353,7 +353,7 @@ class Command
         a = 1
         result.each do |row|
           r = row
-          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].resolve_id).nick} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
+          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).nick} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
         end
       end
