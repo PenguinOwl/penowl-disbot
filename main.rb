@@ -469,7 +469,7 @@ class Command
     mem = event.author
     amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
     bal = mget(mem, :bal).to_i
-    if mget(mem, :payc).to_i < Time.at(Time.now-60)
+    if mget(mem, :payc).to_i < (Time.now-60).to_i
       if mget(event.message.mentions[0].on(event.channel.server), :invcost).to_i*2 < amt
         if amt <= mget(mem, :bal).to_i
           if event.message.mentions.size == 1
@@ -477,6 +477,7 @@ class Command
             mset(mem, :bal, bal-amt)
             mset(mem2, :bal, mget(mem2, :bal).to_i + amt)
             event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
+            mset(mem, :payc, (Time.now-60).to_i)
           else
             event.respond "Mention someone to pay them!"
             tax mem,event
