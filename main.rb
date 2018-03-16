@@ -83,7 +83,7 @@ def link
     $conn.close 
   end
 end
-def pGet(mem, type)
+def pget(mem, type)
   a = true
   type = type.to_s
   $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct]) do |result|
@@ -102,7 +102,7 @@ def pGet(mem, type)
     end
   end
 end
-def pSet(mem, type, val)
+def pset(mem, type, val)
   type = type.to_s
   mget(mem, :lvl)
   $conn.exec_params("update users set #{type}=$1 where discrim=$2", [val, mem.distinct, mem.server.id])
