@@ -310,7 +310,7 @@ class Command
         a = 1
         result.each do |row|
           r = row
-          out << "\n #{a.to_s}. #{r["userid"]} - #{ if ["invest","lbcount"].include? type then "$#{r[type].mon.to_s}" else "#{r[type].to_s}" end}"
+          out << "\n #{a.to_s}. #{r["userid"]} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
         end
       end
@@ -458,7 +458,7 @@ class Command
       af(em, "collect", "collect your hourly wages")
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your hourly payment")
       af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
-      af(em, "top [bal|invcount|lbcount)", "see the leaderboards")
+      af(em, "top [bal|invest|lbcount)", "see the leaderboards")
       af(em, "freeze", "opt out of tax bot")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
