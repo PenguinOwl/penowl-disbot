@@ -2,6 +2,7 @@ require 'discordrb'
 require 'open-uri'
 require 'pg'
 require 'date'
+require 'math'
 
 $conn = 0
 $error = 0
@@ -68,7 +69,7 @@ class String
   end
 end
 def pres(mem)
-  log(mget(mem, :bal)).to_i - 5
+  Math.log10(mget(mem, :bal)).to_i - 5
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
