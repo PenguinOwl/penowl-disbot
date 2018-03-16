@@ -247,7 +247,7 @@ class Command
     end
   end
   
-  def Command.top(event, type)
+  def Command.top(event)
     out = "~^Leaderboard of #{event.channel.server.name}\n$$"
     serverid = event.channel.server.id
     $conn.exec_params("select userid, bal from users where serverid=$1 and state!=1 order by bal desc limit 10", [event.channel.server.id]) do |result|
