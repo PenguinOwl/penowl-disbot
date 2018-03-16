@@ -269,7 +269,7 @@ class Command
         $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
         event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
       else
-        event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account except your prestige level and upgrades. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
+        event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
       end
     else
       event.respond "You need at least 1M to prestige!"
