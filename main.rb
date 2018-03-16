@@ -492,6 +492,9 @@ class Command
       af(em, "top [bal|invest|lbcount)", "see the leaderboards")
       af(em, "freeze", "opt out of tax bot")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
+      af(em, " ", "for advanced players")
+      af(em, "prestige", "reset for cool perks")
+      af(em, "upgrade", "upgrade a perk")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
   end
