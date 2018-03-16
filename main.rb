@@ -262,15 +262,18 @@ class Command
   def Command.prestige(event, arg="elolo")
     mem = event.author
     if pres(mem) > 0
-      if arg == "confirm"
-        mem = event.author
-        pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
-        pset(mem, :points, pget(mem, :points).to_i + pres(mem))
-        $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
-        event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        if arg == "confirm"
+          mem = event.author
+          pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
+          pset(mem, :points, pget(mem, :points).to_i + pres(mem))
+          $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
+          event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
+        else
+          event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
+        end
       else
-        event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
-      end
+        event.repond "You need to pay your taxes in order to prestige!"
     else
       event.respond "You need at least 1M to prestige!"
     end
