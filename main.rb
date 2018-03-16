@@ -68,7 +68,7 @@ class String
   end
 end
 def pres(mem)
-  Math.log10(mget(mem, :bal).to_f).to_i - 8
+  Math.log10(mget(mem, :bal).to_f).to_i - 7
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
