@@ -267,7 +267,7 @@ class Command
       end
       event.respond("```" + out.pad("ljust") + "```")
     else
-      event.respond "Not a vaild ladder"
+      event.respond "Not a vaild ladder!"
     end
   end
   
