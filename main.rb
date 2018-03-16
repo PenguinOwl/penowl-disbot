@@ -175,7 +175,6 @@ end
 $bot.message() do |event|
   link do
     if event.message.content.strip[0] == $prefix
-      puts "caught command"
       cmd = event.message.content.strip
       unless cmd[1] == ">"
         cmd.downcase!
@@ -185,11 +184,9 @@ $bot.message() do |event|
       top = cmd[0]
       cmd.map! {|e| e.gsub("_"," ")}
       cmd.delete_at(0)
-      puts top
       command(top, event, cmd)
       mem = event.author
     end
-    puts event.author
     tax(event.author, event)
   end
 end
@@ -352,8 +349,6 @@ class Command
       $conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
-          puts row["userid"]
-          puts event.channel.server.member(row["userid"].to_i)
           r = row
           out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
@@ -606,7 +601,6 @@ class Command
   
   def Command.>(event, *args)
     if event.author.id=="PenguinOwl#3931"
-      puts args.join " "
       event.respond eval args.join(" ")
     else
       event.respond "boi stop tryn to hack me"
