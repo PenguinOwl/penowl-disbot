@@ -366,6 +366,7 @@ class Command
           a = a + 1
         end
       end
+    else
       event.respond "Not a vaild ladder!"
     end
   end
