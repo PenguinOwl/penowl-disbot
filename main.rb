@@ -470,7 +470,7 @@ class Command
     amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
     bal = mget(mem, :bal).to_i
     if mget(mem, :payc).to_i < (Time.now-60).to_i
-      if mget(event.message.mentions[0].on(event.channel.server), :invcost).to_i*2 < amt
+      if mget(event.message.mentions[0].on(event.channel.server), :invcost).to_i*2 > amt
         if amt <= mget(mem, :bal).to_i
           if event.message.mentions.size == 1
             mem2 = event.message.mentions[0].on(event.channel.server)
