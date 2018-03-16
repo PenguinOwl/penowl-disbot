@@ -255,7 +255,7 @@ class Command
       a = 1
       result.each do |row|
         r = row
-        out << "\n#{a}. #{r["userid"]} - #{r["bal"].mon.to_s}"
+        out << "\n #{a}. #{r["userid"]} - #{r["bal"].mon.to_s}"
         a = a + 1
       end
     end
