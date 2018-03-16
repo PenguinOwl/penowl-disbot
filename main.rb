@@ -391,7 +391,7 @@ class Command
         n = mem.username
       end
       conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
-      pb = pget(mem, :bonus).to_i
+      pb = pget(mem, :lvl).to_i
       if pb > 0
         conc << "\n$$\nPrestige\n$$\nLevel: #{pget(mem, :lvl)}\nPoints available: #{pget(mem, :points)}\nStealer level: #{pget(mem, :steal)}\nBonus level: #{pget(mem, :bonus)}\nAuto level: #{pget(mem, :auto)}"
       end
@@ -411,7 +411,7 @@ class Command
         n = mem.username
       end
       conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
-      pb = pget(mem, :bonus).to_i
+      pb = pget(mem, :lvl).to_i
       if pb > 0
         conc << "\n$$\nPrestige\n$$\nLevel: #{pget(mem, :lvl)}\nPoints available: #{pget(mem, :points)}\nStealer level: #{pget(mem, :steal)}\nBonus level: #{pget(mem, :bonus)}\nAuto level: #{pget(mem, :auto)}"
       end
