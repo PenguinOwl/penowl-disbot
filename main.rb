@@ -68,7 +68,7 @@ class String
   end
 end
 def pres(mem)
-  Math.log10(mget(mem, :bal).to_f).to_i - 6
+  Math.log10(mget(mem, :bal).to_f).to_i - 8
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
@@ -280,7 +280,7 @@ class Command
     if ["bonus", "steal", "auto"].include? type
       mem = event.author.on(event.channel.server)
       if pget(mem, :points).to_i>=(pget(mem, type.to_sym).to_i+1)
-        pset(mem, :points, pget(mem, :points).to_i - pget(mem, type.to_sym).to_i+1)
+        pset(mem, :points, pget(mem, :points).to_i - (pget(mem, type.to_sym).to_i+1))
         pset(mem, type.to_sym, (pget(mem, type.to_sym).to_i+1))
         event.respond "**Upgraded your** `#{type}` **skill to level #{pget(mem, type.to_sym)}.**"
       else
