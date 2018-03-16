@@ -277,7 +277,7 @@ class Command
   end
   
   def Command.upgrade(event, type)
-    if ["bonus", "steal", "auto"].includes? type
+    if ["bonus", "steal", "auto"].include? type
       mem = event.author.on(event.channel.server)
       if pget(mem, :points).to_i>(pget(mem, type.to_sym).to_i+1)
         pset(mem, type.to_sym, (pget(mem, type.to_sym).to_i+1))
