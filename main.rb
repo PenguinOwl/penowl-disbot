@@ -250,11 +250,11 @@ class Command
   def Command.top(event)
     out = "~^Leaderboard of #{event.channel.server.name}\n$$"
     serverid = event.channel.server.id
-    $conn.exec_params("select userid, bal from users where serverid=$1 and state!=0 order by bal desc limit 10", [event.channel.server.id]) do |result|
+    $conn.exec_params("select userid, bal from users where serverid=$1 and state=!0 order by bal desc limit 10", [event.channel.server.id]) do |result|
       a = 1
       result.each do |row|
         r = row
-        out << "\n #{a}. #{r["userid"]} - #{r["bal"].mon.to_s}"
+        out << "\n #{a.to_s}. #{r["userid"]} - #{r["bal"].mon.to_s}"
         a = a + 1
       end
     end
