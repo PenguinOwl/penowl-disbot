@@ -286,6 +286,7 @@ class Command
     mget(mem, :tax)
     $conn.exec_params("select userid from users where userid=$1 and serverid=$2", [mem.distinct.to_s, mem.server.id]).each do |res|
       res.each do |row|
+        puts row.class
         dec = true if row["userid"].include? "#"
       end
     end
