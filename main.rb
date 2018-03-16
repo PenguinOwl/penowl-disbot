@@ -86,15 +86,15 @@ end
 def pget(mem, type)
   a = true
   type = type.to_s
-  $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct]) do |result|
+  $conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
     result.each do |row|
       return row.values_at(type).first
       a = false
     end
   end
   if a
-    $conn.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.distinct])
-    $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct]) do |result|
+    $conn.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.id.to_s])
+    $conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
@@ -105,20 +105,20 @@ end
 def pset(mem, type, val)
   type = type.to_s
   mget(mem, :lvl)
-  $conn.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.distinct])
+  $conn.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.id.to_s])
 end
 def mget(mem, type)
   a = true
   type = type.to_s
-  $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
+  $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
     result.each do |row|
       return row.values_at(type).first
       a = false
     end
   end
   if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0)", [mem.distinct, mem.server.id])
-    $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id]) do |result|
+    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0)", [mem.id.to_s, mem.server.id])
+    $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
@@ -129,7 +129,7 @@ end
 def mset(mem, type, val)
   type = type.to_s
   mget(mem, :tax)
-  $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.distinct, mem.server.id])
+  $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.id.to_s, mem.server.id])
 end
 $prefix= '='
 puts "key", ENV['KEY']
@@ -223,7 +223,7 @@ class Command
   end
 
   def Command.setplaying(event, text)
-    if event.author.distinct=="PenguinOwl#3931"
+    if event.author.id=="PenguinOwl#3931"
       $bot.game= text
     else
       event.respond "but ur not penguin"
@@ -267,7 +267,7 @@ class Command
           mem = event.author
           pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
           pset(mem, :points, pget(mem, :points).to_i + pres(mem))
-          $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
+          $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id])
           event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
         else
           event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
@@ -277,6 +277,33 @@ class Command
       end
     else
       event.respond "You need at least 1M to prestige!"
+    end
+  end
+  
+  def Command.migrate(event)
+    dec = false
+    mem = event.author
+    mget(mem, :tax)
+    $conn.exec_params("select userid from users where userid=$1 and serverid=$2", [mem.distinct.to_s, mem.server.id]).each do |res|
+      res.each do |row|
+        dec = true if row["userid"].include? "#"
+      end
+    end
+    if dec
+      $conn.exec_params("delete from users where userid=$1", [mem.id.to_s])
+      $conn.exec_params("update users set userid=$2 where userid=$1", [mem.distinct, mem.id.to_s])
+    end
+    dec = false
+    mem = event.author
+    pget(mem, :tax)
+    $conn.exec_params("select discrim from prestige where discrim=$1", [mem.distinct.to_s]).each do |res|
+      res.each do |row|
+        dec = true if row["discrim"].include? "#"
+      end
+    end
+    if dec
+      $conn.exec_params("delete from prestige where discrim=$1", [mem.id.to_s])
+      $conn.exec_params("update prestige set discrim=$2 where discrim=$1", [mem.distinct, mem.id.to_s])
     end
   end
   
@@ -330,7 +357,7 @@ class Command
         a = 1
         result.each do |row|
           r = row
-          out << "\n #{a.to_s}. #{r["userid"]} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
+          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].resolve_id).nick} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
         end
       end
@@ -580,7 +607,7 @@ class Command
   
   
   def Command.>(event, *args)
-    if event.author.distinct=="PenguinOwl#3931"
+    if event.author.id=="PenguinOwl#3931"
       puts args.join " "
       event.respond eval args.join(" ")
     else
