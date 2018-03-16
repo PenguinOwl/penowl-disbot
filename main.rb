@@ -105,7 +105,7 @@ end
 def pset(mem, type, val)
   type = type.to_s
   mget(mem, :lvl)
-  $conn.exec_params("update users set #{type}=$1 where discrim=$2", [val, mem.distinct, mem.server.id])
+  $conn.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.distinct, mem.server.id])
 end
 def mget(mem, type)
   a = true
