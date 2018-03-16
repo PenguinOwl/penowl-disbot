@@ -274,6 +274,7 @@ class Command
         end
       else
         event.repond "You need to pay your taxes in order to prestige!"
+      end
     else
       event.respond "You need at least 1M to prestige!"
     end
