@@ -285,11 +285,7 @@ class Command
     mem = event.author
     mget(mem, :tax)
     $conn.exec_params("select userid from users where userid=$1 and serverid=$2", [mem.distinct.to_s, mem.server.id]).each do |res|
-      res.each do |row|
-        puts row.class
-        dec = true if row.first.include? "#"
-        puts dec
-      end
+      dec = true if res["userid"].include? "#"
     end
     if dec
       $conn.exec_params("delete from users where userid=$1", [mem.id.to_s])
@@ -299,10 +295,7 @@ class Command
     mem = event.author
     pget(mem, :tax)
     $conn.exec_params("select discrim from prestige where discrim=$1", [mem.distinct.to_s]).each do |res|
-      res.each do |row|
-        puts row.first
-        dec = true if row.first.include? "#"
-      end
+      dec = true if res["discrim"].include? "#"
     end
     if dec
       $conn.exec_params("delete from prestige where discrim=$1", [mem.id.to_s])
