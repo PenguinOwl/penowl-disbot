@@ -249,13 +249,13 @@ class Command
   
   def Command.top(event, type="daily")
     if ["bal","daily","invcount","lbcount"].include? type
-      out = "~^Leaderboard of #{event.channel.server.name}\n$$"
+      out = "~^Leaderboard of #{event.channel.server.name}"
       out << "\n~^By " + case type
         when "bal"; "Balance"
         when "daily"; "Hourly Rewards"
         when "invcount"; "Investments"
         when "lbcount"; "Lobbys"
-      end
+      end + "\n$$"
       serverid = event.channel.server.id
       $conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
