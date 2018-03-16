@@ -266,7 +266,7 @@ class Command
         mem = event.author
         pset(mem, :lvl, pget(mem, :lvl).to_i + 1)
         $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.distinct, mem.server.id])
-        event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "~^" + mem.distinct).pad("ljust") + "```")
+        event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
       else
         event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account except your prestige level and upgrades. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
       end
