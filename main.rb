@@ -68,7 +68,7 @@ class String
   end
 end
 def pres(mem)
-  Math.log10(mget(mem, :bal).to_f).to_i - 7
+  Math.log10((mget(mem, :bal)-mget(mem,:tax)).to_f).to_i - 7
 end
 def todays
   Time.now.strftime("%Y=%m=%H")
@@ -262,21 +262,17 @@ class Command
   def Command.prestige(event, arg="elolo")
     mem = event.author
     if pres(mem) > 0
-      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-        if arg == "confirm"
-          mem = event.author
-          pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
-          pset(mem, :points, pget(mem, :points).to_i + pres(mem))
-          $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id])
-          event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
-        else
-          event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
-        end
+      if arg == "confirm"
+        mem = event.author
+        pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
+        pset(mem, :points, pget(mem, :points).to_i + pres(mem))
+        $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id])
+        event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
       else
-        event.repond "You need to pay your taxes in order to prestige!"
+        event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
       end
     else
-      event.respond "You need at least 1M to prestige!"
+      event.respond "You need at least 1M to prestige! (After taxes)"
     end
   end
   
