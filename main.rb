@@ -352,6 +352,8 @@ class Command
       $conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 and userid ~ '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
+          puts r["userid"]
+          puts event.channel.server.member(r["userid"].to_i)
           r = row
           out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
