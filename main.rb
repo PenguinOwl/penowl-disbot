@@ -276,7 +276,7 @@ class Command
     end
   end
   
-  def Command.upgrade(event, type)
+  def Command.upgrade(event, type="info")
     if ["bonus", "steal", "auto"].include? type
       mem = event.author.on(event.channel.server)
       if pget(mem, :points).to_i>(pget(mem, type.to_sym).to_i+1)
@@ -390,6 +390,10 @@ class Command
         n = mem.username
       end
       conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
+      pb = pget(mem, :bonus).to_i
+      if pb > 0
+        conc << "\n$$\nPrestige\n$$\nLevel: #{pget(mem, :lvl)}\nPoints available: #{pget(mem, :points)}\nStealer level: #{pget(mem, :steal)}\nBonus level: #{pget(mem, :bonus)}\nAuto level: #{pget(mem, :auto)}"
+      end
     end
     event.message.mentions.each do |mem|
       s = ""
@@ -406,6 +410,10 @@ class Command
         n = mem.username
       end
       conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(mem, :bal).mon}\nHourly Reward: $#{mget(mem, :daily).mon}\nTax Rate: $#{mget(mem, :taxamt).mon} per message\nInvestments: #{mget(mem, :invest).to_s}\nInvestment Cost: $#{mget(mem, :invcost).mon}\nTimes Lobbied: #{mget(mem, :lbcount)}"
+      pb = pget(mem, :bonus).to_i
+      if pb > 0
+        conc << "\n$$\nPrestige\n$$\nLevel: #{pget(mem, :lvl)}\nPoints available: #{pget(mem, :points)}\nStealer level: #{pget(mem, :steal)}\nBonus level: #{pget(mem, :bonus)}\nAuto level: #{pget(mem, :auto)}"
+      end
     end
     if args.include? "noborder"
       event.respond "```" + conc + "```"
