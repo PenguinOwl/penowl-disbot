@@ -94,7 +94,7 @@ def pget(mem, type)
   end
   if a
     $conn.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.distinct])
-    $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct, mem.server.id]) do |result|
+    $conn.exec_params("select * from prestige where discrim=$1", [mem.distinct]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
