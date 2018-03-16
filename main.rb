@@ -486,6 +486,7 @@ class Command
         end
       else
         event.respond "You are paying this user too much!"
+      end
     else
       event.respond "You can only pay someone once per minute!"
     end
