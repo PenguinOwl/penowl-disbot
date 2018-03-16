@@ -261,7 +261,7 @@ class Command
   
   def Command.prestige(event, arg="elolo")
     mem = event.author
-    if pres mem > 0
+    if pres(mem) > 0
       if arg == "confirm"
         mem = event.author
         pset(mem, :lvl, pget(mem, :lvl).to_i + 1)
