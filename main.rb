@@ -358,7 +358,7 @@ class Command
     elsif type == "pres"
       out = "~^Prestige Leaderboard\n$$"
       serverid = event.channel.server.id
-      result = $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10") do |result|
+      result = $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10")
       a = 1
       result.each do |row|
         r = row
