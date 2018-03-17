@@ -358,13 +358,12 @@ class Command
     elsif type == "pres"
       out = "~^Prestige Leaderboard\n$$"
       serverid = event.channel.server.id
-      $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10") do |result|
-        a = 1
-        result.each do |row|
-          r = row
-          out << "\n #{a.to_s}. #{event.channel.server.member(r["discrim"].to_i).name if event.channel.server.member(r["discrim"].to_i)} - #{r["lvl"].to_s}"
-          a = a + 1
-        end
+      result = $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10") do |result|
+      a = 1
+      result.each do |row|
+        r = row
+        out << "\n #{a.to_s}. #{event.channel.server.member(r["discrim"].to_i).name if event.channel.server.member(r["discrim"].to_i)} - #{r["lvl"].to_s}"
+        a = a + 1
       end
     else
       event.respond "Not a vaild ladder!"
@@ -527,7 +526,6 @@ class Command
       af(em, "top [bal|invest|lbcount)", "see the leaderboards")
       af(em, "freeze", "opt out of tax bot")
       af(em, "paytaxes", "p a y   y o u r   t a x e s")
-      em.add_field(value: "for advanced players:", name: "")
       af(em, "prestige", "reset for cool perks")
       af(em, "upgrade", "upgrade a perk")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
