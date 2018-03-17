@@ -365,6 +365,7 @@ class Command
         out << "\n #{a.to_s}. #{event.channel.server.member(r["discrim"].to_i).name if event.channel.server.member(r["discrim"].to_i)} - #{r["lvl"].to_s}"
         a = a + 1
       end
+      event.respond("```" + out.pad("ljust") + "```")
     else
       event.respond "Not a vaild ladder!"
     end
