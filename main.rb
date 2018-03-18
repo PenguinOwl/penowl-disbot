@@ -484,7 +484,7 @@ class Command
         mset(mem, :lbcount, mget(mem, :lbcount).to_i + 1)
         chance = 4
         if Date.today.sunday? or Date.today.saturday?
-          chance = 9
+          chance = 24
         end
         if rand(chance) == 1
           event.respond "***YOU WERE CAUGHT IN THE PROCESS OF LOBBYING. YOU WERE SUED BY THE STATE.***"
