@@ -610,7 +610,7 @@ class Command
   
   
   def Command.>(event, *args)
-    if event.author.id=="PenguinOwl#3931"
+    if event.author.id==205036731592867840
       event.respond eval args.join(" ")
     else
       event.respond "boi stop tryn to hack me"
