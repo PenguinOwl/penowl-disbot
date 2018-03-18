@@ -338,6 +338,7 @@ class Command
   
   def Command.top(event, type="daily")
     if ["bal","daily","invest","lbcount"].include? type
+      $conn.exec "delete from users a using users b where a.id > b.id and a.userid = b.userid"
       out = "~^Leaderboard of #{event.channel.server.name}"
       out << "\n~^By " + case type
         when "bal"; "Balance"
@@ -356,6 +357,7 @@ class Command
       end
       event.respond("```" + out.pad("ljust") + "```")
     elsif type == "pres"
+      $conn.exec "delete from prestige a using prestige b where a.id > b.id and a.discrim = b.discrim"
       out = "~^Prestige Leaderboard\n$$"
       serverid = event.channel.server.id
       result = $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10")
