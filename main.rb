@@ -362,7 +362,7 @@ class Command
       a = 1
       result.each do |row|
         r = row
-        out << "\n #{a.to_s}. #{event.channel.server.member(r["discrim"].to_i).name if r["discrim"] =~ /^[0-9]+$/} - #{r["lvl"].to_s}"
+        out << "\n #{a.to_s}. #{if r["discrim"] =~ /^[0-9]+$/ then event.channel.server.member(r["discrim"].to_i).name else "Unknown" end} - #{r["lvl"].to_s}"
         a = a + 1
       end
       event.respond("```" + out.pad("ljust") + "```")
