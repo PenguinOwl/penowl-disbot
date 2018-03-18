@@ -493,7 +493,7 @@ class Command
           if type == "rates"
             event.respond "**You successfully lobbied the tax code!**"
             unless mget(mem, :taxamt).to_i < 4
-              mset(mem, :taxamt, mget(mem, :taxamt).to_i - rand(3))
+              mset(mem, :taxamt, mget(mem, :taxamt).to_i*(50+rand(30))/100)
             end
           elsif type == "investments"
             event.respond "**You successfully lobbied the stock market!**"
