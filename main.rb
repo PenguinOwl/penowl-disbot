@@ -174,6 +174,10 @@ end
 
 $bot.message() do |event|
   link do
+    mem = event.author.on(event.channel.server)
+    if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+      mset(mem, :tax, mget(mem, :tax).to_i+mget(mem, :taxamt).to_i)
+    end
     if event.message.content.strip[0] == $prefix
       cmd = event.message.content.strip
       unless cmd[1] == ">"
@@ -187,7 +191,6 @@ $bot.message() do |event|
       command(top, event, cmd)
       mem = event.author
     end
-    tax(event.author, event)
   end
 end
 
