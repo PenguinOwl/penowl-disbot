@@ -192,12 +192,14 @@ $bot.message() do |event|
 end
 
 def tax(dfs, event)
-  begin
-    mem = dfs.on(event.channel.server)
-    if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      mset(mem, :tax, mget(event.author, :tax).to_i+mget(mem, :taxamt).to_i)
+  link do
+    begin
+      mem = dfs.on(event.channel.server)
+      if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        mset(mem, :tax, mget(event.author, :tax).to_i+mget(mem, :taxamt).to_i)
+      end
+    rescue NoMethodError
     end
-  rescue NoMethodError
   end
 end
 
