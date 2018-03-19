@@ -546,7 +546,7 @@ class Command
             mem2 = event.message.mentions[0].on(event.channel.server)
             mset(mem, :bal, bal-amt)
             mset(mem2, :bal, mget(mem2, :bal).to_i + amt)
-            event.respond "**Paid " + mem2.mention + " $#{sprintf "%.2f", amt.to_f * 0.01}.**"
+            event.respond "**Paid " + mem2.mention + " $#{amt.to_s.mon}.**"
             mset(mem, :payc, (Time.now).to_i)
           else
             event.respond "Mention someone to pay them!"
@@ -566,13 +566,13 @@ class Command
   def Command.invest(event)
     mem = event.author.on(event.channel.server)
     if mget(mem, :invcost).to_i <= mget(mem, :bal).to_i
-      event.respond "*Invested $#{sprintf "%.2f", mget(mem, :invcost).to_f * 0.01} into the stock market.*"
+      event.respond "*Invested $#{mget(mem, :invcost).mon} into the stock market.*"
       mset(mem, :bal, mget(mem, :bal).to_i - mget(mem, :invcost).to_i)
       diff = (rand(mget(mem, :invcost).to_i/5) - mget(mem, :invcost).to_i/20) * 2
       if diff > 0
-        event.respond "**Success!** Your investments matured and you recived a $#{sprintf "%.2f", diff.to_f * 0.01} raise!"
+        event.respond "**Success!** Your investments matured and you recived a $#{diff.to_s.mon} raise!"
       else
-        event.respond "**Oh no!** Your investments failed and you took a $#{sprintf "%.2f", diff.to_f * -0.01} cut."
+        event.respond "**Oh no!** Your investments failed and you took a $#{diff.to_s.mon.to_f*-1} cut."
       end
       mset(mem, :invcost, mget(mem, :invcost).to_i + (mget(mem, :invcost).to_i / 5) + diff)
       mset(mem, :daily, mget(mem, :daily).to_i + diff)
