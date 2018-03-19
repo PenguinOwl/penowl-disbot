@@ -468,7 +468,7 @@ class Command
       event.respond "**Collected $#{mget(mem, :daily).mon} from the bank.**"
       pb = pget(mem, :bonus).to_i
       if pb > 0
-        bonus = 0.1 * pb
+        bonus = 0.25 * pb
         mset(mem, :bal, (mget(mem, :daily).to_f.*bonus).to_i + mget(mem, :bal).to_i)
         per = (bonus*100).to_i
         event.respond "*+#{per}% from prestige*"
