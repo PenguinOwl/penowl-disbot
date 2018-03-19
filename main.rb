@@ -198,7 +198,7 @@ def tax(dfs, event)
       if mget(mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         mset(mem, :tax, mget(event.author, :tax).to_i+mget(mem, :taxamt).to_i)
       end
-    rescue NoMethodError
+    rescue PG:UnableToSend
     end
   end
 end
