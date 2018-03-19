@@ -63,11 +63,11 @@ CARRIES ACROSS ALL SERVERS
 
 Reset for cool perks. Gives one upgrade level and point for each order of magnitude over 1M in your balance.
 
-1M = 1 prestige level & point 
-10M = 2 prestige levels & points 
-100M = 3 prestige levels & points
-1B = 4 prestige levels & points
-10B = 5 prestige levels & points
+- 1M = 1 prestige level & point
+- 10M = 2 prestige levels & points
+- 100M = 3 prestige levels & points
+- 1B = 4 prestige levels & points
+- 10B = 5 prestige levels & points
 ... 
 
 =upgrade (bonus|steal|auto)
@@ -75,10 +75,10 @@ Reset for cool perks. Gives one upgrade level and point for each order of magnit
 Upgrade a perk: bonus, steal, or auto. (Bonus gives a bonus for investing, steal lets you steal some from people, and auto gives you a free hourly reward once per day per level.) 
 
 It takes one extra point for each upgrade, e.g.
-Bonus lvl 1 = 1 point
-Bonus lvl 2 = 2 points (3 in total)
-Bonus lvl 3 = 3 points (6 in total)
-Bonus lvl 4 = 4 points (10 in total)
-Bonus lvl 5 = 5 points (15 in total)
+- Bonus lvl 1 = 1 point
+- Bonus lvl 2 = 2 points (3 in total)
+- Bonus lvl 3 = 3 points (6 in total)
+- Bonus lvl 4 = 4 points (10 in total)
+- Bonus lvl 5 = 5 points (15 in total)
 ...
 
