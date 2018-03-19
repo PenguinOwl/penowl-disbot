@@ -60,6 +60,7 @@ Pay your taxes.
 =prestige
 --------
 CARRIES ACROSS ALL SERVERS
+
 Reset for cool perks. Gives one upgrade level and point for each order of magnitude over 1M in your balance.
 
 1M = 1 prestige level & point 
