@@ -81,11 +81,8 @@ def taxdays(mydate)
     mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
 end
 def link
-  if $conn==0 
+  if $conn.finished? or $conn==0
     $conn = PG::Connection.open(ENV['DATABASE_URL'])
-  end
-  if $conn.finished?
-    $conn.reset_start
   end
   yield
 end
