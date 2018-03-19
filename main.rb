@@ -3,7 +3,7 @@ require 'open-uri'
 require 'pg'
 require 'date'
 
-$conn = 0
+conn = 0
 $error = 0
 $pres = <<'here'
   ___  ___  ___  ___  _____  ___  ___  ___ 
@@ -78,62 +78,62 @@ def todays
   Time.now.strftime("%Y=%m=%H")
 end
 def taxdays(mydate)
-    mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
+  mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
 end
 def link
-  $conn = PG::Connection.open(ENV['DATABASE_URL'])
-  yield
-  unless $conn.finished? then 
-    $conn.close 
-  end
+  conn = PG::Connection.open(ENV['DATABASE_URL'])
+  yield(conn)
+  conn.finish unless conn.finished? 
 end
-def pget(mem, type)
-  a = true
-  type = type.to_s
-  $conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
-    result.each do |row|
-      return row.values_at(type).first
-      a = false
-    end
-  end
-  if a
-    $conn.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.id.to_s])
-    $conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
+class PG::Connection
+  def pget(mem, type)
+    a = true
+    type = type.to_s
+    self.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
       end
     end
-  end
-end
-def pset(mem, type, val)
-  type = type.to_s
-  mget(mem, :lvl)
-  $conn.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.id.to_s])
-end
-def mget(mem, type)
-  a = true
-  type = type.to_s
-  $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
-    result.each do |row|
-      return row.values_at(type).first
-      a = false
+    if a
+      self.exec_params("insert into prestige (discrim, lvl, steal, bonus, auto) values ($1, 0, 0, 0, 0)", [mem.id.to_s])
+      self.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
+        result.each do |row|
+          return row.values_at(type).first
+          a = false
+        end
+      end
     end
   end
-  if a
-    $conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0)", [mem.id.to_s, mem.server.id])
-    $conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
+  def pset(mem, type, val)
+    type = type.to_s
+    mget(mem, :lvl)
+    self.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.id.to_s])
+  end
+  def mget(mem, type)
+    a = true
+    type = type.to_s
+    self.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
         a = false
       end
     end
+    if a
+      self.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0)", [mem.id.to_s, mem.server.id])
+      self.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
+        result.each do |row|
+          return row.values_at(type).first
+          a = false
+        end
+      end
+    end
   end
-end
-def mset(mem, type, val)
-  type = type.to_s
-  mget(mem, :tax)
-  $conn.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.id.to_s, mem.server.id])
+  def mset(mem, type, val)
+    type = type.to_s
+    mget(mem, :tax)
+    self.exec_params("update users set #{type}=$1 where userid=$2 and serverid=$3", [val, mem.id.to_s, mem.server.id])
+  end
 end
 $prefix= '='
 puts "key", ENV['KEY']
@@ -173,7 +173,7 @@ def command(command,event,args)
 end
 
 $bot.message() do |event|
-  link do
+  link do |conn|
     if event.message.content.strip[0] == $prefix
       cmd = event.message.content.strip
       unless cmd[1] == ">"
@@ -267,7 +267,7 @@ class Command
         mem = event.author
         pset(mem, :lvl, pget(mem, :lvl).to_i + pres(mem))
         pset(mem, :points, pget(mem, :points).to_i + pres(mem))
-        $conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id])
+        conn.exec_params("delete from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id])
         event.respond("@here " + mem.mention + " has decided to ```" + ($pres + "\n~^" + mem.distinct).pad("ljust") + "```")
       else
         event.respond("**" + event.author.mention + ", are you sure that you want to prestige? This action will reset your entire account (except your prestige level and upgrades) and will add #{pres(mem).to_s} prestige levels to it. If you are sure you want to proceed, do** `#{$prefix}prestige confirm`")
@@ -281,22 +281,22 @@ class Command
     dec = false
     mem = event.author
     mget(mem, :tax)
-    $conn.exec_params("select userid from users where userid=$1 and serverid=$2", [mem.distinct.to_s, mem.server.id]).each do |res|
+    conn.exec_params("select userid from users where userid=$1 and serverid=$2", [mem.distinct.to_s, mem.server.id]).each do |res|
       dec = true if res["userid"].include? "#"
     end
     if dec
-      $conn.exec_params("delete from users where userid=$1", [mem.id.to_s])
-      $conn.exec_params("update users set userid=$2 where userid=$1", [mem.distinct, mem.id.to_s])
+      conn.exec_params("delete from users where userid=$1", [mem.id.to_s])
+      conn.exec_params("update users set userid=$2 where userid=$1", [mem.distinct, mem.id.to_s])
     end
     dec = false
     mem = event.author
     pget(mem, :tax)
-    $conn.exec_params("select discrim from prestige where discrim=$1", [mem.distinct.to_s]).each do |res|
+    conn.exec_params("select discrim from prestige where discrim=$1", [mem.distinct.to_s]).each do |res|
       dec = true if res["discrim"].include? "#"
     end
     if dec
-      $conn.exec_params("delete from prestige where discrim=$1", [mem.id.to_s])
-      $conn.exec_params("update prestige set discrim=$2 where discrim=$1", [mem.distinct, mem.id.to_s])
+      conn.exec_params("delete from prestige where discrim=$1", [mem.id.to_s])
+      conn.exec_params("update prestige set discrim=$2 where discrim=$1", [mem.distinct, mem.id.to_s])
     end
   end
   
@@ -346,7 +346,7 @@ class Command
         when "lbcount"; "Lobbys"
       end + "\n$$"
       serverid = event.channel.server.id
-      $conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
+      conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
           r = row
@@ -358,7 +358,7 @@ class Command
     elsif type == "pres"
       out = "~^Prestige Leaderboard\n$$"
       serverid = event.channel.server.id
-      result = $conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10")
+      result = conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10")
       a = 1
       result.each do |row|
         r = row
