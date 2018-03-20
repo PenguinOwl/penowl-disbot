@@ -10,15 +10,6 @@ $pres = <<'here'
  |  _/|   /| _| \__ \  | |   | || (_ || _| 
  |_|  |_|_\|___||___/  |_|  |___|\___||___|
 here
-class Msg < Discordrb::MessageEvent
-  @conn = nil
-  def conn
-    return @conn
-  end
-  def conn=(val)
-    @conn = val
-  end
-end
 class String
   def pad(align="center")
     fin = ""
@@ -90,6 +81,7 @@ def taxdays(mydate)
 end
 def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
+  event.attr_accessor(:conn)
   event.conn = conn
   yield
   conn.finish
