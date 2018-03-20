@@ -363,7 +363,7 @@ class Command
         when "lbcount"; "Lobbys"
       end + "\n$$"
       serverid = event.channel.server.id
-      event.conn.exec_params("select userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
+      event.conn.exec_params("select distinct userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
           r = row
