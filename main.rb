@@ -13,9 +13,6 @@ here
 module ConnHolder
   attr_accessor :conn
 end
-class Discordrb::MessageEvent
-  include ConnHolder
-end
 class String
   def pad(align="center")
     fin = ""
@@ -88,6 +85,7 @@ end
 def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
   event.conn = conn
+  event.include ConnHolder
   yield
   conn.finish
 end
