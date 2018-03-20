@@ -179,40 +179,32 @@ $bot.message() do |event|
     if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
       mset(event, mem, :tax, mget(event, mem, :tax).to_i+mget(event, mem, :taxamt).to_i)
     end
-    if event.message.content.strip[0] == $prefix
-      cmd = event.message.content.strip
-      unless cmd[1] == ">"
-        cmd.downcase!
+    if event.message.content.strip[0] == $prefix or (event.message.mentions.map {|item| item.id}).include? $bot.profile.id
+      if (event.message.mentions.map {|item| item.id}).include? $bot.profile.id
+        cmd = event.message.content.strip
+        unless cmd[1] == ">"
+          cmd.downcase!
+        end
+        cmd = cmd.split(" ")
+        cmd.delete_at(0)
+        top = cmd[0]
+        cmd.map! {|e| e.gsub("_"," ")}
+        cmd.delete_at(0)
+        command(top, event, cmd)
+        mem = event.author
+      else
+        cmd = event.message.content.strip
+        unless cmd[1] == ">"
+          cmd.downcase!
+        end
+        cmd[0] = ""
+        cmd = cmd.split(" ")
+        top = cmd[0]
+        cmd.map! {|e| e.gsub("_"," ")}
+        cmd.delete_at(0)
+        command(top, event, cmd)
+        mem = event.author
       end
-      cmd[0] = ""
-      cmd = cmd.split(" ")
-      top = cmd[0]
-      cmd.map! {|e| e.gsub("_"," ")}
-      cmd.delete_at(0)
-      command(top, event, cmd)
-      mem = event.author
-    end
-  end
-end
-
-$bot.mention() do |event|
-  link(event) do
-    mem = event.author.on(event.channel.server)
-    if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      mset(event, mem, :tax, mget(event, mem, :tax).to_i+mget(event, mem, :taxamt).to_i)
-    end
-    if event.message.content.strip[0] == $prefix
-      cmd = event.message.content.strip
-      unless cmd[1] == ">"
-        cmd.downcase!
-      end
-      cmd = cmd.split(" ")
-      cmd.delete_at 0
-      top = cmd[0]
-      cmd.map! {|e| e.gsub("_"," ")}
-      cmd.delete_at(0)
-      command(top, event, cmd)
-      mem = event.author
     end
   end
 end
