@@ -530,7 +530,7 @@ class Command
   end
   
   def Command.help(event)
-    event.channel.send_embed do |em|
+    event.author.dm.send_embed do |em|
       em.title = "Commands"
       em.color = 313600
       af(em, "help", "not hard to guess")
