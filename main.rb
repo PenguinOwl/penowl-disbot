@@ -569,7 +569,7 @@ class Command
     if mget(event, mem, :invcost).to_i <= mget(event, mem, :bal).to_i
       event.respond "*Invested $#{mget(event, mem, :invcost).mon} into the stock market.*"
       mset(event, mem, :bal, mget(event, mem, :bal).to_i - mget(event, mem, :invcost).to_i)
-      diff = (rand(mget(event, mem, :invcost).to_i/5) - mget(event, mem, :invcost).to_i/15) * 2
+      diff = (rand(mget(event, mem, :invcost).to_i/5) - mget(event, mem, :invcost).to_i/20) * 2
       if diff > 0
         event.respond "**Success!** Your investments matured and you recived a $#{diff.to_s.mon} raise!"
       else
