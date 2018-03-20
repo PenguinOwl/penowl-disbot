@@ -10,7 +10,7 @@ $pres = <<'here'
  |  _/|   /| _| \__ \  | |   | || (_ || _| 
  |_|  |_|_\|___||___/  |_|  |___|\___||___|
 here
-class Discordrb::MessageEvent
+class Msg << Discordrb::MessageEvent
   @conn = nil
   def conn
     return @conn
