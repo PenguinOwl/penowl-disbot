@@ -10,8 +10,14 @@ $pres = <<'here'
  |  _/|   /| _| \__ \  | |   | || (_ || _| 
  |_|  |_|_\|___||___/  |_|  |___|\___||___|
 here
-module ConnHolder
-  attr_accessor :conn
+class Discordrb::MessageEvent
+  @conn = nil
+  def conn
+    return @conn
+  end
+  def conn=(val)
+    @conn = val
+  end
 end
 class String
   def pad(align="center")
@@ -85,7 +91,6 @@ end
 def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
   event.conn = conn
-  event.include ConnHolder
   yield
   conn.finish
 end
