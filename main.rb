@@ -10,8 +10,11 @@ $pres = <<'here'
  |  _/|   /| _| \__ \  | |   | || (_ || _| 
  |_|  |_|_\|___||___/  |_|  |___|\___||___|
 here
-class Discordrb::MessageEvent
+module ConnHolder
   attr_accessor :conn
+end
+class Discordrb::MessageEvent
+  include ConnHolder
 end
 class String
   def pad(align="center")
