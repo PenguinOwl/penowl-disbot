@@ -372,7 +372,7 @@ class Command
         end
       end
       event.respond("```" + out.pad("ljust") + "```")
-    elsif type == "pres" && false
+    elsif type == "pres"
       out = "~^Prestige Leaderboard\n$$"
       serverid = event.channel.server.id
       result = event.conn.exec("select discrim, lvl from prestige where discrim similar to '[0123456789]+' order by lvl desc limit 10")
