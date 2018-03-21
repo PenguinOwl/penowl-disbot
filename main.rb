@@ -44,9 +44,12 @@ class String
     fin << "+" + ("-" * lg) + "+\n"
     return fin
   end
-  def mon
+  def mon(pos=false)
     d = self.dup
     d = d.to_f * 0.01
+    if d < 0 && pos
+      d = d * -1
+    end
     t = -1
     pr = ""
     t, pr = case d
@@ -587,7 +590,7 @@ class Command
       if diff > 0
         event.respond "**Success!** Your investments matured and you recived a $#{diff.to_s.mon} raise!"
       else
-        event.respond "**Oh no!** Your investments failed and you took a $#{diff.to_s.mon.to_f*-1} cut."
+        event.respond "**Oh no!** Your investments failed and you took a $#{diff.to_s.mon(true)} cut."
       end
       mset(event, mem, :invcost, mget(event, mem, :invcost).to_i + (mget(event, mem, :invcost).to_i / 5) + diff)
       mset(event, mem, :daily, mget(event, mem, :daily).to_i + diff)
