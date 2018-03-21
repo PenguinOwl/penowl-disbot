@@ -551,6 +551,7 @@ class Command
       af(em, "upgrade", "upgrade a perk")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
+    event.respond (event.author.mention + ", check your dms!")
   end
   
   def Command.pay(event, ment, amt)
