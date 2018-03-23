@@ -357,20 +357,20 @@ class Command
   end
   
   def Command.top(event, type="daily")
-    if ["bal","daily","invest","lbcount"].include? type
+    if ["bal","daily","tinvest","tlbcount"].include? type
       out = "~^Leaderboard of #{event.channel.server.name}"
       out << "\n~^By " + case type
         when "bal"; "Balance"
         when "daily"; "Hourly Rewards"
-        when "invest"; "Investments"
-        when "lbcount"; "Lobbys"
+        when "tinvest"; "Investments"
+        when "tlbcount"; "Lobbys"
       end + "\n$$"
       serverid = event.channel.server.id
       event.conn.exec_params("select distinct userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
           r = row
-          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
+          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["tinvest","tlbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
           a = a + 1
         end
       end
@@ -382,7 +382,7 @@ class Command
       a = 1
       result.each do |row|
         r = row
-        out << "\n #{a.to_s}. #{if r["discrim"] =~ /^[0-9]+$/ then event.channel.server.member(r["discrim"].to_i).name else "Unknown" end} - #{r["lvl"].to_s}"
+        out << "\n #{a.to_s}. #{if r["discrim"] =~ /^[0-9]+$/ and event.channel.server.member(r["discrim"].to_i) then event.channel.server.member(r["discrim"].to_i).name else "Unknown" end} - #{r["lvl"].to_s}"
         a = a + 1
       end
       event.respond("```" + out.pad("ljust") + "```")
