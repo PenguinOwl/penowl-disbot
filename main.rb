@@ -83,7 +83,7 @@ def todays
   Time.now.strftime("%Y=%m=%H")
 end
 def taxdays(mydate)
-    mydate.month != mydate.next_day.next_day.next_day.next_day.next_day.month 
+    mydate.month != (mydate+10).month 
 end
 def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
@@ -618,7 +618,7 @@ class Command
           mset(event, mem, :month, Date.today.year.to_s + "-" + Date.today.month.to_s)
           event.respond "Taxes paid for the month of " + Date.today.strftime("%B") + "."
         else
-          event.respond "You may only pay your taxes on the last 5 days of the month!"
+          event.respond "You may only pay your taxes on the last 10 days of the month!"
         end
       else
         event.respond "You do not have enough money to pay your taxes!"
