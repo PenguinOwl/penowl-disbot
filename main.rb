@@ -538,8 +538,8 @@ endofstring
       if pb > 0
         bst = stack(pb)
         curr = mget(event, mem, :stack).to_i
-        event.respond "*#{curr**2}x from stack!#{" (MAXED)" if bst[0].to_i == curr}*"
-        mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*(curr**2)).to_i + mget(event, mem, :bal).to_i)
+        event.respond "*#{2**curr}x from stack!#{" (MAXED)" if bst[0].to_i == curr}*"
+        mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*((2**curr)-1)).to_i + mget(event, mem, :bal).to_i)
         if mget(event, mem, :day) == todays(Time.now-3600) 
           if bst[0].to_i < curr
             mset(event, mem, :stack, (mget(event, mem, :stack)).to_i + 1)
