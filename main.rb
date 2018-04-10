@@ -76,7 +76,9 @@ def stack(i)
   max = sqrt(i)
   max = max.to_i
   amt = ((max+1)**2)-(max**2)
-  prog = (100*(i-max**2))/(100*((max+1)**2)-(max**2))
+  camt = i-(max**2)
+  prog = (100*(i-max**2))/(100*(((max+1)**2)-(max**2)))
+  return [max,prog,camt,amt]
 end
 def pres(event, mem)
   begin
@@ -85,8 +87,8 @@ def pres(event, mem)
     return 0
   end
 end
-def todays
-  Time.now.strftime("%Y=%m=%H")
+def todays(time=Time.now)
+  time.strftime("%Y=%m=%H")
 end
 def taxdays(mydate)
     mydate.month != (mydate+10).month 
@@ -133,7 +135,7 @@ def mget(event, mem, type)
     end
   end
   if a
-    event.conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0)", [mem.id.to_s, mem.server.id])
+    event.conn.exec_params("insert into users (userid, serverid, tax, bal, credit, taxamt, daily, invest, invcost, lbcount, state, pres, stack) values ($1, $2, 0, 700, 0, 5, 150, 0, 500, 0, 0, 0, 0)", [mem.id.to_s, mem.server.id])
     event.conn.exec_params("select * from users where userid=$1 and serverid=$2", [mem.id.to_s, mem.server.id]) do |result|
       result.each do |row|
         return row.values_at(type).first
@@ -453,30 +455,68 @@ class Command
       else
         n = mem.username
       end
-      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(event, mem, :bal).mon}\nHourly Reward: $#{mget(event, mem, :daily).mon}\nTax Rate: $#{mget(event, mem, :taxamt).mon} per message\nInvestments: #{mget(event, mem, :invest).to_s}\nInvestment Cost: $#{mget(event, mem, :invcost).mon}\nTimes Lobbied: #{mget(event, mem, :lbcount)}"
+      conc = <<endofstring
+#{n}'s Stats
+$$
+Tax: #{s}
+Balance: $#{mget(event, mem, :bal).mon}
+Hourly Reward: $#{mget(event, mem, :daily).mon}
+Tax Rate: $#{mget(event, mem, :taxamt).mon} per message
+Investments: #{mget(event, mem, :invest).to_s}
+Investment Cost: $#{mget(event, mem, :invcost).mon}
+Times Lobbied: #{mget(event, mem, :lbcount)}"
+endofstring
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
-        conc << "\n$$\nPrestige\n$$\nLevel: #{pget(event, mem, :lvl)}\nPoints available: #{pget(event, mem, :points)}\nStealer level: #{pget(event, mem, :steal)}\nBonus level: #{pget(event, mem, :bonus)}\nAuto level: #{pget(event, mem, :auto)}"
+        conc << "\n" + <<endofstring
+$$
+Prestige
+$$
+Level: #{pget(event, mem, :lvl)}
+Points available: #{pget(event, mem, :points)}
+Stealer level: #{pget(event, mem, :steal)}
+Bonus level: #{pget(event, mem, :bonus)}
+Auto level: #{pget(event, mem, :auto)}
+endofstring
       end
     end
     event.message.mentions.each do |mem|
       s = ""
-      mem = mem.on(event.channel.server)
       if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
          s = "$" + mget(event, mem, :tax).mon
       else
          s = "Paid"
       end
+      mem = event.author
       n = ""
       if mem.nick
         n = mem.nick
       else
         n = mem.username
       end
-      conc = n + "'s Stats\n$$\nTax: #{s}\nBalance: $#{mget(event, mem, :bal).mon}\nHourly Reward: $#{mget(event, mem, :daily).mon}\nTax Rate: $#{mget(event, mem, :taxamt).mon} per message\nInvestments: #{mget(event, mem, :invest).to_s}\nInvestment Cost: $#{mget(event, mem, :invcost).mon}\nTimes Lobbied: #{mget(event, mem, :lbcount)}"
+      conc = <<endofstring
+#{n}'s Stats
+$$
+Tax: #{s}
+Balance: $#{mget(event, mem, :bal).mon}
+Hourly Reward: $#{mget(event, mem, :daily).mon}
+Tax Rate: $#{mget(event, mem, :taxamt).mon} per message
+Investments: #{mget(event, mem, :invest).to_s}
+Investment Cost: $#{mget(event, mem, :invcost).mon}
+Times Lobbied: #{mget(event, mem, :lbcount)}"
+endofstring
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
-        conc << "\n$$\nPrestige\n$$\nLevel: #{pget(event, mem, :lvl)}\nPoints available: #{pget(event, mem, :points)}\nStealer level: #{pget(event, mem, :steal)}\nBonus level: #{pget(event, mem, :bonus)}\nAuto level: #{pget(event, mem, :auto)}"
+        conc << "\n" + <<endofstring
+$$
+Prestige
+$$
+Level: #{pget(event, mem, :lvl)}
+Points available: #{pget(event, mem, :points)}
+Stealer level: #{pget(event, mem, :steal)}
+Bonus level: #{pget(event, mem, :bonus)}
+Auto level: #{pget(event, mem, :auto)}
+endofstring
       end
     end
     if args.include? "noborder"
@@ -490,15 +530,20 @@ class Command
     mem = event.author
     unless mget(event, mem, :day) == todays
       mset(event, mem, :bal, mget(event, mem, :daily).to_i + mget(event, mem, :bal).to_i)
-      mset(event, mem, :day, todays)
       event.respond "**Collected $#{mget(event, mem, :daily).mon} from the bank.**"
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
-        bonus = 0.25 * pb
+        bst = stack(pb)
+        curr = mget(event, mem, :stack).to_i
+        event.respond "*#{curr+1}x from stack! #{"(MAXED)" if bst[0].to_i == curr}*"
         mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*bonus).to_i + mget(event, mem, :bal).to_i)
-        per = (bonus*100).to_i
-        event.respond "*x from stack!*"
+        if mget(event, mem, :day) == todays(Time.now-3600) 
+          if bst[0].to_i < curr
+            mset(event, mem, :stack, (mget(event, mem, :stack)).to_i + 1)
+          end
+        end
       end
+      mset(event, mem, :day, todays)
     else
       event.respond "You already collected your reward!"
     end
