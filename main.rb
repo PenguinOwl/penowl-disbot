@@ -473,10 +473,7 @@ $$
 Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
-Points available: #{pget(event, mem, :points)}
-Stealer level: #{pget(event, mem, :steal)}
-Bonus level: #{pget(event, mem, :bonus)}
-Auto level: #{pget(event, mem, :auto)}
+Current Stack: #{mget(event, mem, :stack)}
 endofstring
       end
     end
@@ -512,10 +509,7 @@ $$
 Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
-Points available: #{pget(event, mem, :points)}
-Stealer level: #{pget(event, mem, :steal)}
-Bonus level: #{pget(event, mem, :bonus)}
-Auto level: #{pget(event, mem, :auto)}
+Current Stack: #{mget(event, mem, :stack)}
 endofstring
       end
     end
