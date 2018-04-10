@@ -77,7 +77,7 @@ def stack(i)
   max = max.to_i
   amt = ((max+1)**2)-(max**2)
   camt = i-(max**2)
-  prog = (100*(i-max**2))/(100*(((max+1)**2)-(max**2)))
+  prog = camt/amt
   return [max,prog,camt,amt]
 end
 def pres(event, mem)
@@ -474,9 +474,9 @@ Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{mget(event, mem, :stack)}
-Max Level: #{st[0]}
+Max Stack: #{st[0]}
 Progress
-#{"█"*(st[1]/10)}#{"▒"*(10-(st[1]/10))}
+#{"█ "*(st[1]/10)}#{"▒ "*(10-(st[1]/10))}
 >~#{st[2]}/#{st[3]}
 endofstring
       end
