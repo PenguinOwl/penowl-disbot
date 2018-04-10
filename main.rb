@@ -535,7 +535,7 @@ endofstring
             mset(event, mem, :stack, (mget(event, mem, :stack)).to_i + 1)
           end
         else
-          mset(event, mem, :stack, 2)
+          mset(event, mem, :stack, 0)
         end
       end
       mset(event, mem, :day, todays)
