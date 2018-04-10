@@ -463,16 +463,21 @@ Hourly Reward: $#{mget(event, mem, :daily).mon}
 Tax Rate: $#{mget(event, mem, :taxamt).mon} per message
 Investments: #{mget(event, mem, :invest).to_s}
 Investment Cost: $#{mget(event, mem, :invcost).mon}
-Times Lobbied: #{mget(event, mem, :lbcount)}"
+Times Lobbied: #{mget(event, mem, :lbcount)}
 endofstring
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
-        conc << "\n" + <<endofstring
+        st = stack(pb)
+        conc << <<endofstring
 $$
 Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{mget(event, mem, :stack)}
+Max Level: #{st[0]}
+Progress
+#{"█"*(st[1]/10)}#{"▒"*(10-(st[1]/10))}
+>~#{st[2]}/#{st[3]}
 endofstring
       end
     end
@@ -499,16 +504,21 @@ Hourly Reward: $#{mget(event, mem, :daily).mon}
 Tax Rate: $#{mget(event, mem, :taxamt).mon} per message
 Investments: #{mget(event, mem, :invest).to_s}
 Investment Cost: $#{mget(event, mem, :invcost).mon}
-Times Lobbied: #{mget(event, mem, :lbcount)}"
+Times Lobbied: #{mget(event, mem, :lbcount)}
 endofstring
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
-        conc << "\n" + <<endofstring
+        st = stack(pb)
+        conc << <<endofstring
 $$
 Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{mget(event, mem, :stack)}
+Max Level: #{st[0]}
+Progress
+#{"█"*(st[1]/10)}#{"▒"*(10-(st[1]/10))}
+>~#{st[2]}/#{st[3]}
 endofstring
       end
     end
