@@ -73,7 +73,7 @@ class String
   end
 end
 def stack(i)
-  max = sqrt(i)
+  max = Math.sqrt(i)
   max = max.to_i
   amt = ((max+1)**2)-(max**2)
   camt = i-(max**2)
