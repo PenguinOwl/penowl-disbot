@@ -474,7 +474,7 @@ Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
-Max Stack: #{2**(st[0]+1)}x
+Max Stack: #{2**(st[0])}x
 Progress to next max:
 #{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
 #{st[2]}/#{st[3]}
@@ -515,7 +515,7 @@ Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
-Max Stack: #{2**(st[0]+1)}x
+Max Stack: #{2**(st[0])}x
 Progress to next max:
 #{"█"*(st[1]*20).to_i}#{"▒"*(10-(st[1]*20).to_i)}
 #{st[2]}/#{st[3]}
@@ -538,15 +538,15 @@ endofstring
       if pb > 0
         bst = stack(pb)
         curr = mget(event, mem, :stack).to_i
+        unless mget(event, mem, :day) == todays(Time.now-3600) 
+          mset(event, mem, :stack, 0)
+        end
         event.respond "*#{2**curr}x from stack!#{" (MAXED)" if bst[0].to_i == curr}*"
         mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*((2**curr)-1)).to_i + mget(event, mem, :bal).to_i)
         if mget(event, mem, :day) == todays(Time.now-3600) 
           if bst[0].to_i > curr
             mset(event, mem, :stack, (mget(event, mem, :stack)).to_i + 1)
           end
-        else
-          mset(event, mem, :stack, 0)
-        end
       end
       mset(event, mem, :day, todays)
     else
