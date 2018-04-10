@@ -97,9 +97,9 @@ def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
   event.conn = conn
   yield
-  conn.finish
+  event.conn.finish
   ensure
-    conn.finish unless conn.finished?
+    event.conn.finish unless event.conn.finished? && event.conn
 end
 def pget(event, mem, type)
   a = true
