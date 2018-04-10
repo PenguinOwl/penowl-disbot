@@ -78,7 +78,7 @@ def stack(i)
   amt = ((max+1)**2)-(max**2)
   camt = i-(max**2)
   prog = camt.to_f/amt.to_f
-  return [max,prog,camt,amt]
+  return [max+1,prog,camt,amt]
 end
 def pres(event, mem)
   begin
