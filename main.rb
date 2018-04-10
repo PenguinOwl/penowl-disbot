@@ -98,7 +98,7 @@ def link(event)
   event.conn = conn
   yield
   ensure
-    event.conn.finish if event.conn
+    event.conn.finish if event.conn and !event.conn.finished?
 end
 def pget(event, mem, type)
   a = true
