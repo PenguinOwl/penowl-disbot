@@ -121,7 +121,7 @@ def pget(event, mem, type)
 end
 def pset(event, mem, type, val)
   type = type.to_s
-  mget(event, mem, :lvl)
+  pget(event, mem, :lvl)
   event.conn.exec_params("update prestige set #{type}=$1 where discrim=$2", [val, mem.id.to_s])
 end
 def mget(event, mem, type)
