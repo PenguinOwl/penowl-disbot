@@ -72,6 +72,12 @@ class String
     return r
   end
 end
+def stack(i)
+  max = sqrt(i)
+  max = max.to_i
+  amt = ((max+1)**2)-(max**2)
+  prog = (100*(i-max**2))/(100*((max+1)**2)-(max**2))
+end
 def pres(event, mem)
   begin
     return Math.log10(((mget(event, mem, :bal).to_i)-(mget(event, mem,:tax).to_i)).to_f).to_i - 7
@@ -90,6 +96,8 @@ def link(event)
   event.conn = conn
   yield
   conn.finish
+  ensure
+    conn.finish unless conn.finished?
 end
 def pget(event, mem, type)
   a = true
@@ -320,20 +328,20 @@ class Command
     end
   end
   
-  def Command.upgrade(event, type="info")
-    if ["bonus", "steal", "auto"].include? type
-      mem = event.author.on(event.channel.server)
-      if pget(event, mem, :points).to_i>=(pget(event, mem, type.to_sym).to_i+1)
-        pset(event, mem, :points, pget(event, mem, :points).to_i - (pget(event, mem, type.to_sym).to_i+1))
-        pset(event, mem, type.to_sym, (pget(event, mem, type.to_sym).to_i+1))
-        event.respond "**Upgraded your** `#{type}` **skill to level #{pget(event, mem, type.to_sym)}.**"
-      else
-        event.respond "Not enough prestige points!"
-      end
-    else
-      event.respond "You can only upgrade bonus, steal, and auto."
-    end
-  end
+#  def Command.upgrade(event, type="info")
+#    if ["bonus", "steal", "auto"].include? type
+#      mem = event.author.on(event.channel.server)
+#      if pget(event, mem, :points).to_i>=(pget(event, mem, type.to_sym).to_i+1)
+#        pset(event, mem, :points, pget(event, mem, :points).to_i - (pget(event, mem, type.to_sym).to_i+1))
+#        pset(event, mem, type.to_sym, (pget(event, mem, type.to_sym).to_i+1))
+#        event.respond "**Upgraded your** `#{type}` **skill to level #{pget(event, mem, type.to_sym)}.**"
+#      else
+#        event.respond "Not enough prestige points!"
+#      end
+#    else
+#      event.respond "You can only upgrade bonus, steal, and auto."
+#    end
+#  end
   
   def Command.unfreeze(event)
     mem = event.author
@@ -484,12 +492,12 @@ class Command
       mset(event, mem, :bal, mget(event, mem, :daily).to_i + mget(event, mem, :bal).to_i)
       mset(event, mem, :day, todays)
       event.respond "**Collected $#{mget(event, mem, :daily).mon} from the bank.**"
-      pb = pget(event, mem, :bonus).to_i
+      pb = pget(event, mem, :lvl).to_i
       if pb > 0
         bonus = 0.25 * pb
         mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*bonus).to_i + mget(event, mem, :bal).to_i)
         per = (bonus*100).to_i
-        event.respond "*+#{per}% from prestige*"
+        event.respond "*x from stack!*"
       end
     else
       event.respond "You already collected your reward!"
