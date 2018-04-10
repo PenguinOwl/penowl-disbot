@@ -475,7 +475,7 @@ $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
 Max Stack: #{2**(st[0]+1)}x
-Progress
+Progress to next max:
 #{"█"*(st[1]*20).to_i}#{"▒"*(10-(st[1]*20).to_i)}
 #{st[2]}/#{st[3]}
 endofstring
@@ -516,7 +516,7 @@ $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
 Max Stack: #{2**(st[0]+1)}x
-Progress
+Progress to next max:
 #{"█"*(st[1]*20).to_i}#{"▒"*(10-(st[1]*20).to_i)}
 #{st[2]}/#{st[3]}
 endofstring
