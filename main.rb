@@ -477,7 +477,7 @@ Current Stack: #{mget(event, mem, :stack)}
 Max Stack: #{st[0]}
 Progress
 #{"█ "*(st[1]/10)}#{"▒ "*(10-(st[1]/10))}
->~#{st[2]}/#{st[3]}
+~>#{st[2]}/#{st[3]}
 endofstring
       end
     end
@@ -515,10 +515,10 @@ Prestige
 $$
 Level: #{pget(event, mem, :lvl)}
 Current Stack: #{mget(event, mem, :stack)}
-Max Level: #{st[0]}
+Max Stack: #{st[0]}
 Progress
-#{"█"*(st[1]/10)}#{"▒"*(10-(st[1]/10))}
->~#{st[2]}/#{st[3]}
+#{"█ "*(st[1]/10)}#{"▒ "*(10-(st[1]/10))}
+~>#{st[2]}/#{st[3]}
 endofstring
       end
     end
