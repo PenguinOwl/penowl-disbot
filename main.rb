@@ -552,7 +552,7 @@ endofstring
       end
       mset(event, mem, :day, todays)
     else
-      event.respond "You already collected your reward!"
+      event.respond "#{ d ? "They" : "You" } have already collected your reward!"
     end
   end
   
