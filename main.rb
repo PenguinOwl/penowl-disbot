@@ -537,7 +537,7 @@ endofstring
     end
     unless mget(event, mem, :day) == todays
       mset(event, mem, :bal, mget(event, mem, :daily).to_i + mget(event, mem, :bal).to_i)
-      event.respond "**Collected $#{mget(event, mem, :daily).mon} from the bank#{(" for" + (mem.nick ? mem.nick : mem.name)) if d}.**"
+      event.respond "**Collected $#{mget(event, mem, :daily).mon} from the bank#{(" for " + (mem.nick ? mem.nick : mem.name)) if d}.**"
       pb = pget(event, mem, :lvl).to_i
       if pb > 0
         bst = stack(pb)
