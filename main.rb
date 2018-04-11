@@ -529,7 +529,7 @@ endofstring
     end
   end
   
-  def Command.reward(event, fill=nil, d=nil)
+  def Command.reward(event, d=nil)
     mem = event.message.mentions.first if d
     mem = event.author unless d
     unless mget(event, mem, :day) == todays
