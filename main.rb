@@ -259,6 +259,10 @@ class Command
       event.respond "but ur not penguin"
     end
   end
+  
+  def Command.invite(event)
+    event.respond "**Invite the bot here:** " + $bot.invite
+  end
 
   def Command.taxes(event, *args)
     mem = event.author
