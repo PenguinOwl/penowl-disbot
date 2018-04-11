@@ -483,6 +483,7 @@ endofstring
     end
     event.message.mentions.each do |mem|
       s = ""
+      mem = mem.on(event.channel.server)
       if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
          s = "$" + mget(event, mem, :tax).mon
       else
