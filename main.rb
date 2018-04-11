@@ -530,7 +530,7 @@ endofstring
   end
   
   def Command.reward(event, d=nil)
-    mem = event.message.mentions.first if d
+    mem = event.message.mentions.first.on(event.channel.server) if d
     mem = event.author unless d
     unless mget(event, mem, :day) == todays
       mset(event, mem, :bal, mget(event, mem, :daily).to_i + mget(event, mem, :bal).to_i)
