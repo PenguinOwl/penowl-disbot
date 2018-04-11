@@ -547,6 +547,7 @@ endofstring
           if bst[0].to_i > curr
             mset(event, mem, :stack, (mget(event, mem, :stack)).to_i + 1)
           end
+        end
       end
       mset(event, mem, :day, todays)
     else
