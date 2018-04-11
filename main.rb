@@ -261,7 +261,7 @@ class Command
   end
   
   def Command.invite(event)
-    event.respond "**Invite the bot here:** " + $bot.invite
+    event.respond "**Invite the bot here:** " + $bot.invite_url
   end
 
   def Command.taxes(event, *args)
