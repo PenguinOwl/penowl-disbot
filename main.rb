@@ -541,6 +541,7 @@ endofstring
         curr = mget(event, mem, :stack).to_i
         unless mget(event, mem, :day) == todays(Time.now-3600) 
           mset(event, mem, :stack, 0)
+          curr = mget(event, mem, :stack).to_i
         end
         event.respond "*#{2**curr}x from stack!#{" (MAXED)" if bst[0].to_i == curr}*"
         mset(event, mem, :bal, (mget(event, mem, :daily).to_f.*((2**curr)-1)).to_i + mget(event, mem, :bal).to_i)
