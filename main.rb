@@ -13,8 +13,6 @@ here
 class Discordrb::Events::MessageEvent
   attr_accessor :conn
 end
-class NoAccountError < StanderdError
-end
 class String
   def pad(align="center")
     fin = ""
@@ -103,13 +101,14 @@ def link(event)
     event.conn.finish if event.conn and !event.conn.finished?
 end
 def acc?(event, mem)
-  a = true
+  a = false
   type = type.to_s
-  event.conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
+  event.conn.exec_params("select * from users where discrim=$1", [mem.id.to_s]) do |result|
     result.each do |row|
-      a = false
+      a = true
     end
   end
+  a
 end
 def pget(event, mem, type)
   a = true
