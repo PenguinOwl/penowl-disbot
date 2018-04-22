@@ -13,6 +13,8 @@ here
 class Discordrb::Events::MessageEvent
   attr_accessor :conn
 end
+class NoAccountError < StanderdError
+end
 class String
   def pad(align="center")
     fin = ""
@@ -100,6 +102,15 @@ def link(event)
   ensure
     event.conn.finish if event.conn and !event.conn.finished?
 end
+def acc?(event, mem)
+  a = true
+  type = type.to_s
+  event.conn.exec_params("select * from prestige where discrim=$1", [mem.id.to_s]) do |result|
+    result.each do |row|
+      a = false
+    end
+  end
+end
 def pget(event, mem, type)
   a = true
   type = type.to_s
@@ -185,11 +196,13 @@ def command(command,event,args)
   end
 end
 
-$bot.message() do |event|
+$bot.message do |event|
   link(event) do
     mem = event.author.on(event.channel.server)
-    if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-      mset(event, mem, :tax, mget(event, mem, :tax).to_i+mget(event, mem, :taxamt).to_i)
+    if acc?(event, mem)
+      if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+        mset(event, mem, :tax, mget(event, mem, :tax).to_i+mget(event, mem, :taxamt).to_i)
+      end
     end
     if event.message.content.strip[0] == $prefix or (event.message.mentions.map {|item| item.id}).include? $bot.profile.id
       if (event.message.mentions.map {|item| item.id}).include? $bot.profile.id
