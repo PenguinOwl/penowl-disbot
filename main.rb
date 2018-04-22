@@ -103,7 +103,7 @@ end
 def acc?(event, mem)
   a = false
   type = type.to_s
-  event.conn.exec_params("select * from users where discrim=$1", [mem.id.to_s]) do |result|
+  event.conn.exec_params("select * from users where userid=$1", [mem.id.to_s]) do |result|
     result.each do |row|
       a = true
     end
