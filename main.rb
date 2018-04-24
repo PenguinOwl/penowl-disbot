@@ -328,6 +328,7 @@ class Command
     conc << "- collect reward\n" unless mget(event, mem, :day) == todays
     conc << "- lobby the government" unless mget(event, mem, :lbday) == Date.today.to_s
     conc << "- pay your taxes" unless !taxdays(Date.today) || mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+    event.respond("```" + conc.pad("ljust") + "```")
   end
     
   
