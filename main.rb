@@ -322,6 +322,15 @@ class Command
     end
   end
   
+  def Command.!(event)
+    mem = event.author
+    conc = "~^To-Do List\n$$\n"
+    conc << "- collect reward\n" unless mget(event, mem, :day) == todays
+    conc << "- lobby the government" unless mget(event, mem, :lbday) == Date.today.to_s
+    conc << "- pay your taxes" unless !taxdays(Date.today) || mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+  end
+    
+  
   def Command.migrate(event)
     dec = false
     mem = event.author
