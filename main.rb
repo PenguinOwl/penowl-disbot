@@ -626,19 +626,18 @@ endofstring
     event.author.dm.send_embed do |em|
       em.title = "Commands"
       em.color = 313600
+      af(em, "!", "get tips on what to do next")
       af(em, "help", "not hard to guess")
-      af(em, "taxes [users]", "displays tax information")
-      af(em, "balance [users]", "displays balance - aliases: bal, money")
       af(em, "info [users]", "displays everything you need to know - alias: stats")
-      af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "collect", "collect your hourly wages")
+      af(em, "balance [users]", "displays balance - aliases: bal, money")
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your hourly payment")
       af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
+      af(em, "pay (user) (amount)", "give someone some of your money")
       af(em, "top [bal|invest|lbcount)", "see the leaderboards")
       af(em, "freeze", "opt out of tax bot")
-      af(em, "paytaxes", "p a y   y o u r   t a x e s")
-      af(em, "prestige", "reset for cool perks")
-      af(em, "upgrade", "upgrade a perk")
+      af(em, "paytaxes", "pay your taxes")
+      af(em, "prestige", "reset for stacking")
       em.footer = Discordrb::Webhooks::EmbedFooter.new(text: "the irs is always watching", icon_url: $bot.profile.avatar_url)
     end
     event.respond (event.author.mention + ", check your dms!")
