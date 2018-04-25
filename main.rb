@@ -736,6 +736,7 @@ end
 
 $bot.ready do
   $bot.game= "do "+$prefix+"help | " + (ENV['HEROKU_RELEASE_VERSION'] if ENV['DEV'] != "false")
+  puts "Succesfully connected to the API and to #{$bot.servers.size} servers."
 end
 
 $bot.run
