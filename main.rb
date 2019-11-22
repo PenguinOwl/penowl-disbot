@@ -265,7 +265,7 @@ class Command
   end
 
   def Command.setplaying(event, *text)
-    if event.author.id=="PenguinOwl#3931"
+    if event.author.id==205036731592867840
       $bot.game= text.join(" ")
     else
       event.respond "but ur not penguin"
