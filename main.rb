@@ -53,15 +53,15 @@ class String
     t = -1
     pr = ""
     t, pr = case d
-      when (10**6)..((10**9)-1); [1, "M"]
-      when (10**9)..((10**12)-1); [2, "B"]
-      when (10**12)..((10**15)-1); [3, "T"]
-      when (10**15)..((10**18)-1); [4, "Qu"]
-      when (10**18)..((10**21)-1); [5, "Qi"]
-      when d < (10^21); [6, "S"]
-    else
-      [-1, ""]
-    end
+            when (10**6)..((10**9)-1); [1, "M"]
+            when (10**9)..((10**12)-1); [2, "B"]
+            when (10**12)..((10**15)-1); [3, "T"]
+            when (10**15)..((10**18)-1); [4, "Qu"]
+            when (10**18)..((10**21)-1); [5, "Qi"]
+            when d < (10^21); [6, "S"]
+            else
+              [-1, ""]
+            end
     t = 3 * t
     t = t + 3
     t = 10**(t)
@@ -91,14 +91,14 @@ def todays(time=Time.now)
   time.strftime("%Y=%m=%H")
 end
 def taxdays(mydate)
-    mydate.month != (mydate+10).month 
+  mydate.month != (mydate+10).month 
 end
 def link(event)
   conn = PG::Connection.open(ENV['DATABASE_URL'])
   event.conn = conn
   yield
-  ensure
-    event.conn.finish if event.conn and !event.conn.finished?
+ensure
+  event.conn.finish if event.conn and !event.conn.finished?
 end
 def acc?(event, mem)
   a = false
@@ -174,19 +174,19 @@ def command(command,event,args)
     end
   else
     # begin
-      begin
-        unless mget(event, event.author, :state) == "1" and not command == "unfreeze"
-          Command.send(command,event,*args)
-        else
-          event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
-        end
-      rescue ArgumentError
-        mem = event.author
-        if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && mget(event, mem, :state) == "0"
-          mset(event, event.author, :tax, mget(event, event.author, :tax).to_i+mget(event, event.author, :taxamt).to_i)
-        end
-        event.respond("Argument error!")
+    begin
+      unless mget(event, event.author, :state) == "1" and not command == "unfreeze"
+        Command.send(command,event,*args)
+      else
+        event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
       end
+    rescue ArgumentError
+      mem = event.author
+      if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && mget(event, mem, :state) == "0"
+        mset(event, event.author, :tax, mget(event, event.author, :tax).to_i+mget(event, event.author, :taxamt).to_i)
+      end
+      event.respond("Argument error!")
+    end
     # rescue NoMethodError
     #   mem = event.author
     #   if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
@@ -257,7 +257,7 @@ class Command
   def Command.rubber(event)
     event.respond("woot")
   end
-  
+
   def Command.version(event)
     event.respond(ENV['HEROKU_RELEASE_VERSION'])
   end
@@ -273,7 +273,7 @@ class Command
       event.respond "but ur not penguin"
     end
   end
-  
+
   def Command.invite(event)
     event.respond "**Invite the bot here:** " + $bot.invite_url
   end
@@ -296,7 +296,7 @@ class Command
       end
     end
   end
-  
+
   def Command.freeze(event, arg="elolo")
     if arg == "confirm"
       mem = event.author
@@ -306,7 +306,7 @@ class Command
       event.respond("**" + event.author.mention + ", are you sure that you want to freeze your account? This action will reset your balance. If you are sure you want to proceed, do** `#{$prefix}freeze confirm`")
     end
   end
-  
+
   def Command.prestige(event, arg="elolo")
     mem = event.author
     if pres(event, mem) > 0
@@ -323,7 +323,7 @@ class Command
       event.respond "You need at least 1M to prestige! (After taxes)"
     end
   end
-  
+
   def Command.!(event)
     mem = event.author
     conc = "~^To-Do List\n$$\n"
@@ -334,8 +334,8 @@ class Command
     conc << " - pay your taxes\n" unless !taxdays(Date.today) || mget(event, mem, :month) == (Date.today.year.to_s + "-" + Date.today.month.to_s)
     event.respond("```" + conc.pad("ljust") + "```")
   end
-    
-  
+
+
   def Command.migrate(event)
     dec = false
     mem = event.author
@@ -358,29 +358,29 @@ class Command
       event.conn.exec_params("update prestige set discrim=$2 where discrim=$1", [mem.distinct, mem.id.to_s])
     end
   end
-  
-#  def Command.upgrade(event, type="info")
-#    if ["bonus", "steal", "auto"].include? type
-#      mem = event.author.on(event.channel.server)
-#      if pget(event, mem, :points).to_i>=(pget(event, mem, type.to_sym).to_i+1)
-#        pset(event, mem, :points, pget(event, mem, :points).to_i - (pget(event, mem, type.to_sym).to_i+1))
-#        pset(event, mem, type.to_sym, (pget(event, mem, type.to_sym).to_i+1))
-#        event.respond "**Upgraded your** `#{type}` **skill to level #{pget(event, mem, type.to_sym)}.**"
-#      else
-#        event.respond "Not enough prestige points!"
-#      end
-#    else
-#      event.respond "You can only upgrade bonus, steal, and auto."
-#    end
-#  end
-  
+
+  #  def Command.upgrade(event, type="info")
+  #    if ["bonus", "steal", "auto"].include? type
+  #      mem = event.author.on(event.channel.server)
+  #      if pget(event, mem, :points).to_i>=(pget(event, mem, type.to_sym).to_i+1)
+  #        pset(event, mem, :points, pget(event, mem, :points).to_i - (pget(event, mem, type.to_sym).to_i+1))
+  #        pset(event, mem, type.to_sym, (pget(event, mem, type.to_sym).to_i+1))
+  #        event.respond "**Upgraded your** `#{type}` **skill to level #{pget(event, mem, type.to_sym)}.**"
+  #      else
+  #        event.respond "Not enough prestige points!"
+  #      end
+  #    else
+  #      event.respond "You can only upgrade bonus, steal, and auto."
+  #    end
+  #  end
+
   def Command.unfreeze(event)
     mem = event.author
     mset(event, mem, :bal, 0)
     mset(event, mem, :state, 0)
     event.respond("**Your account has been unfrozen and your balance has been reset.**")
   end
-  
+
   def Command.money(event, *args)
     mem = event.author
     if event.message.mentions.size == 0
@@ -394,23 +394,25 @@ class Command
       event.respond("**" + mem.mention + " has $#{mget(event, mem, :bal).mon}.**")
     end
   end
-  
+
   def Command.top(event, type="daily")
     if ["bal","daily","invest","lbcount"].include? type
       out = "~^Leaderboard of #{event.channel.server.name}"
       out << "\n~^By " + case type
-        when "bal"; "Balance"
-        when "daily"; "Hourly Rewards"
-        when "invest"; "Investments"
-        when "lbcount"; "Lobbys"
+      when "bal"; "Balance"
+      when "daily"; "Hourly Rewards"
+      when "invest"; "Investments"
+      when "lbcount"; "Lobbys"
       end + "\n$$"
       serverid = event.channel.server.id
       event.conn.exec_params("select distinct userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
-          r = row
-          out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
-          a = a + 1
+          if event.channel.server.member(r["userid"].to_i)
+            r = row
+            out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
+            a = a + 1
+          end
         end
       end
       event.respond("```" + out.pad("ljust") + "```")
@@ -429,7 +431,7 @@ class Command
       event.respond "Not a vaild ladder!"
     end
   end
-  
+
   def Command.id(event, *args)
     mem = event.author
     if event.message.mentions.size == 0
@@ -443,27 +445,27 @@ class Command
       event.respond("**" + mem.mention + " is id $#{mget(event, mem, :id)}.**")
     end
   end
-  
+
   def Command.richest(event)
     money(event, "bal")
   end
-    
+
   def Command.balance(event, *args)
     money(event, *args)
   end
-  
+
   def Command.stats(event, *args)
     info(event, *args, "noborder")
   end
-  
+
   def Command.bal(event, *args)
     money(event, *args)
   end
-  
+
   def Command.collect(event, *args)
     reward(event, *args)
   end
-  
+
   def Command.info(event, *args)
     mem = event.author
     conc = ""
@@ -473,9 +475,9 @@ class Command
       end
       s = ""
       if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = "$" + mget(event, mem, :tax).mon
+        s = "$" + mget(event, mem, :tax).mon
       else
-         s = "Paid"
+        s = "Paid"
       end
       mem = event.author
       n = ""
@@ -485,7 +487,7 @@ class Command
         n = mem.username
       end
       conc = <<endofstring
-#{n}'s Stats
+      #{n}'s Stats
 $$
 Tax: #{s}
 Balance: $#{mget(event, mem, :bal).mon}
@@ -506,8 +508,8 @@ Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
 Max Stack: #{2**(st[0])}x
 Progress to next max:
-#{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
-#{st[2]}/#{st[3]}
+        #{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
+        #{st[2]}/#{st[3]}
 endofstring
       end
     end
@@ -515,9 +517,9 @@ endofstring
       s = ""
       mem = mem.on(event.channel.server)
       if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-         s = "$" + mget(event, mem, :tax).mon
+        s = "$" + mget(event, mem, :tax).mon
       else
-         s = "Paid"
+        s = "Paid"
       end
       n = ""
       if mem.nick
@@ -526,7 +528,7 @@ endofstring
         n = mem.username
       end
       conc = <<endofstring
-#{n}'s Stats
+      #{n}'s Stats
 $$
 Tax: #{s}
 Balance: $#{mget(event, mem, :bal).mon}
@@ -547,8 +549,8 @@ Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
 Max Stack: #{2**(st[0])}x
 Progress to next max:
-#{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
-#{st[2]}/#{st[3]}
+        #{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
+        #{st[2]}/#{st[3]}
 endofstring
       end
     end
@@ -558,7 +560,7 @@ endofstring
       event.respond "```" + conc.pad + "```"
     end
   end
-  
+
   def Command.reward(event, d=nil)
     mem = event.author
     if d
@@ -588,7 +590,7 @@ endofstring
       event.respond "#{ d ? "They" : "You" } have already collected #{ d ? "their" : "your" } reward!"
     end
   end
-  
+
   def Command.lobby(event, type)
     mem = event.author
     unless mget(event, mem, :lbday) == Date.today.to_s
@@ -624,7 +626,7 @@ endofstring
       event.respond "You have already lobbied today!"
     end
   end
-  
+
   def Command.help(event)
     event.author.dm.send_embed do |em|
       em.title = "Commands"
@@ -645,7 +647,7 @@ endofstring
     end
     event.respond (event.author.mention + ", check your dms!")
   end
-  
+
   def Command.pay(event, ment, amt)
     mem = event.author
     amt = amt.to_s.match(/[\d\.]+/)[0].to_f.*(100).to_i
@@ -673,7 +675,7 @@ endofstring
       event.respond "You can only pay someone once every other minute!"
     end
   end
-    
+
   def Command.invest(event)
     mem = event.author.on(event.channel.server)
     if mget(event, mem, :invcost).to_i <= mget(event, mem, :bal).to_i
@@ -699,7 +701,7 @@ endofstring
       event.respond "Not enough money!"
     end
   end
-  
+
   def Command.paytaxes(event)
     mem = event.author
     if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
@@ -719,9 +721,9 @@ endofstring
       event.respond "You have already paid your taxes this month!"
     end
   end
-            
-  
-  
+
+
+
   def Command.>(event, *args)
     if event.author.id==205036731592867840
       event.respond eval args.join(" ")
