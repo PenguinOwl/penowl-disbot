@@ -327,9 +327,9 @@ class Command
     conc = "~^To-Do List\n$$\n"
     conc << " - collect your reward\n" unless mget(event, mem, :day) == todays
     conc << " - lobby the government\n" unless mget(event, mem, :lbday) == Date.today.to_s
-    conc << " - invest your money\n" if mget(event, mem, :invcost) < mget(event, mem, :bal)
+    conc << " - invest your money\n" if mget(event, mem, :invcost).to_i < mget(event, mem, :bal).to_i
     conc << " - prestige for #{pres(event, mem).to_s} levels\n" if pres(event, mem) > 0
-    conc << " - pay your taxes\n" unless !taxdays(Date.today) || mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
+    conc << " - pay your taxes\n" unless !taxdays(Date.today) || mget(event, mem, :month) == (Date.today.year.to_s + "-" + Date.today.month.to_s)
     event.respond("```" + conc.pad("ljust") + "```")
   end
     
