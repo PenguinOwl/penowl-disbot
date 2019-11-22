@@ -34,7 +34,17 @@ Give someone some of your money.
 =collect
 --------
 Collect your hourly wages.
-Gain an extra +10% for each prestige level.
+Every consecutive hour you invest, you can double you income. Note that this is capped with your prestige level, so:
+
+```
+0 prestige = 1x cap
+1 prestige = 2x cap
+4 prestige = 4x cap
+9 prestige = 8x cap
+16 prestige = 16x cap
+25 prestige = 32x cap
+...
+```
 
 =invest
 --------
@@ -55,7 +65,7 @@ Opt out of tax bot so you can message without getting taxed. (resets balance, bu
 =paytaxes 
 --------
 Pay your taxes.
-(On last five days of the month. You will not accumulate any taxes until the next month..)
+(On last ten days of the month. You will not accumulate any taxes until the next month..)
 
 =prestige
 --------
@@ -70,6 +80,7 @@ Reset for cool perks. Gives one upgrade level and point for each order of magnit
 - 10B = 5 prestige levels & points
 ... 
 
+<!--
 =upgrade (bonus|steal|auto)
 --------
 Upgrade a perk: bonus, steal, or auto. (Bonus gives a bonus for investing, steal lets you steal some from people, and auto gives you a free hourly reward once per day per level.) 
@@ -82,3 +93,4 @@ It takes one extra point for each upgrade, e.g.
 - Bonus lvl 5 = 5 points (15 in total)
 ...
 
+-->
