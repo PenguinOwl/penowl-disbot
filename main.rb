@@ -173,27 +173,27 @@ def command(command,event,args)
       event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
     end
   else
-    # begin
     begin
-      unless mget(event, event.author, :state) == "1" and not command == "unfreeze"
-        Command.send(command,event,*args)
-      else
-        event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
+      begin
+        unless mget(event, event.author, :state) == "1" and not command == "unfreeze"
+          Command.send(command,event,*args)
+        else
+          event.respond "**Your account is frozen! Unfreeze it with** `#{$prefix}unfreeze`"
+        end
+      rescue ArgumentError
+        mem = event.author
+        if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && mget(event, mem, :state) == "0"
+          mset(event, event.author, :tax, mget(event, event.author, :tax).to_i+mget(event, event.author, :taxamt).to_i)
+        end
+        event.respond("Argument error!")
       end
-    rescue ArgumentError
+    rescue NoMethodError
       mem = event.author
-      if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)  && mget(event, mem, :state) == "0"
+      if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
         mset(event, event.author, :tax, mget(event, event.author, :tax).to_i+mget(event, event.author, :taxamt).to_i)
       end
-      event.respond("Argument error!")
+      event.respond("That's not a command!")
     end
-    # rescue NoMethodError
-    #   mem = event.author
-    #   if mget(event, mem, :month) != (Date.today.year.to_s + "-" + Date.today.month.to_s)
-    #     mset(event, event.author, :tax, mget(event, event.author, :tax).to_i+mget(event, event.author, :taxamt).to_i)
-    #   end
-    #   event.respond("That's not a command!")
-    # end
   end
 end
 
