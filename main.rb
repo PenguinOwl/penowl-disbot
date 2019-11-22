@@ -264,9 +264,9 @@ class Command
     event.respond("yea " + event.author.mention)
   end
 
-  def Command.setplaying(event, text)
+  def Command.setplaying(event, *text)
     if event.author.id=="PenguinOwl#3931"
-      $bot.game= text
+      $bot.game= text.join(" ")
     else
       event.respond "but ur not penguin"
     end
