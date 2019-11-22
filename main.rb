@@ -408,7 +408,7 @@ class Command
       event.conn.exec_params("select distinct userid, #{type} from users where serverid=$1 and state!=1 and userid similar to '[0123456789]+' order by #{type} desc limit 10", [event.channel.server.id]) do |result|
         a = 1
         result.each do |row|
-          if event.channel.server.member(r["userid"].to_i)
+          if event.channel.server.member(row["userid"].to_i)
             r = row
             out << "\n #{a.to_s}. #{event.channel.server.member(r["userid"].to_i).name} - #{ if ["invest","lbcount"].include? type then "#{r[type].to_s}" else "$#{r[type].mon.to_s}" end}"
             a = a + 1
@@ -639,7 +639,7 @@ endofstring
       af(em, "invest", "invest money (shown in #{$prefix}info) to increase your hourly payment")
       af(em, "lobby (investments|taxes|rates)", "lobby the government to decrease one of your debts")
       af(em, "pay (user) (amount)", "give someone some of your money")
-      af(em, "top [bal|invest|lbcount)", "see the leaderboards")
+      af(em, "top [bal|invest|lbcount]", "see the leaderboards")
       af(em, "freeze", "opt out of tax bot")
       af(em, "paytaxes", "pay your taxes")
       af(em, "prestige", "reset for stacking")
