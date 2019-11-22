@@ -82,8 +82,8 @@ def stack(i)
 end
 def pres(event, mem)
   begin
-    return Math.log10(((mget(event, mem, :bal).to_i+1)-(mget(event, mem,:tax).to_i+1)).to_f).to_i - 7
-  rescue Math::DomainError
+    return Math.log10(((mget(event, mem, :bal).to_i+1)-(mget(event, mem,:tax).to_i)).to_f).to_i - 7
+  rescue Math::DomainError, Math::FloatDomainError
     return 0
   end
 end
@@ -103,9 +103,11 @@ end
 def acc?(event, mem)
   a = false
   type = type.to_s
-  event.conn.exec_params("select * from users where userid=$1", [mem.id.to_s]) do |result|
-    result.each do |row|
-      a = true
+  if mem
+    event.conn.exec_params("select * from users where userid=$1", [mem.id.to_s]) do |result|
+      result.each do |row|
+        a = true
+      end
     end
   end
   a
