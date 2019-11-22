@@ -82,7 +82,7 @@ def stack(i)
 end
 def pres(event, mem)
   begin
-    return Math.log10(((mget(event, mem, :bal).to_i)-(mget(event, mem,:tax).to_i)).to_f).to_i - 7
+    return Math.log10(((mget(event, mem, :bal).to_i+1)-(mget(event, mem,:tax).to_i+1)).to_f).to_i - 7
   rescue Math::DomainError
     return 0
   end
