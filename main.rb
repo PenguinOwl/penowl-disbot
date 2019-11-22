@@ -528,7 +528,7 @@ endofstring
         n = mem.username
       end
       conc = <<endofstring
-      #{n}'s Stats
+#{n}'s Stats
 $$
 Tax: #{s}
 Balance: $#{mget(event, mem, :bal).mon}
@@ -549,8 +549,8 @@ Level: #{pget(event, mem, :lvl)}
 Current Stack: #{2**(mget(event, mem, :stack).to_i)}x
 Max Stack: #{2**(st[0])}x
 Progress to next max:
-        #{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
-        #{st[2]}/#{st[3]}
+#{"█"*(st[1]*20).to_i}#{"▒"*(20-(st[1]*20).to_i)}
+#{st[2]}/#{st[3]}
 endofstring
       end
     end
