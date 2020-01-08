@@ -42,7 +42,7 @@ class String
       end
     end
     fin << "+" + ("-" * lg) + "+\n"
-    return fin
+    return "\n" + fin + "\n"
   end
   def mon(pos=false)
     d = self.dup
